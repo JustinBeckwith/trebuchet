@@ -1,0 +1,16 @@
+body, html {
+  margin: 0px;
+  padding: 0px;
+}
+
+.smallCol {
+  width: 50px;
+}
+
+.medCol {
+  width: 150px;
+}
+
+.iconCol {
+  width: 15px;
+}
