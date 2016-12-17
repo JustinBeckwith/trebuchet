@@ -10,11 +10,11 @@ export default class MyGrid extends React.Component {
 
   getListItems() {
     let data = [{
-      name: "foo",
-      path: "/other/place/someotherpath",
-      adminPort: 1234,
+      name: "shell-php",
+      path: "~/minishell",
+      adminPort: 8003,
       status: "started",
-      port: 234
+      port: 11080
     }, {
       name: "boo",
       path: "/some/path/12345",
@@ -55,7 +55,7 @@ export default class MyGrid extends React.Component {
             <TableHeaderColumn className="iconCol"></TableHeaderColumn>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody showRowHover={true}>
           {listItems}
         </TableBody>
       </Table>

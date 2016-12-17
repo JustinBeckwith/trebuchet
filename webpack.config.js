@@ -2,13 +2,14 @@ const ElectronConnectWebpackPlugin = require('electron-connect-webpack-plugin');
 const path = require("path");
 
 module.exports = {
+  target: 'electron',
   devtool: 'source-map',
   entry: [
     'babel-polyfill',
-    './ui/scripts/app.js'
+    './src/scripts/app.js'
   ],
   output: {
-    path: './ui/scripts',
+    path: './src/scripts',
     filename: 'app.bundle.js',
   },
   module: {
@@ -17,7 +18,7 @@ module.exports = {
       exclude: /node_modules/,
       loader: 'babel-loader',
       query: {
-        presets: ['es2015', 'react']
+        presets: ['es2015', 'react', 'stage-0']
       }
     }]
   },
