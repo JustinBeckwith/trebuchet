@@ -8,41 +8,11 @@ export default class MyGrid extends React.Component {
     super(props);
   }
 
-  getListItems() {
-    let data = [{
-      name: "shell-php",
-      path: "~/minishell",
-      adminPort: 8003,
-      status: "started",
-      port: 11080
-    }, {
-      name: "boo",
-      path: "/some/path/12345",
-      adminPort: 9876,
-      status: "stopped",
-      port: 890
-    }, {
-      name: "moo",
-      path: "/some/person/45",
-      adminPort: 194,
-      status: "starting",
-      port: 235
-    }, {
-      name: "doo",
-      path: "/some/path/1dddd5",
-      adminPort: 3456,
-      status: "stopping",
-      port: 44
-    }
-   ];
-
-   return data.map((app) =>
-     <MyGridRow app={app} key={app.path} />
-   );
-  }
-
   render() {
-    let listItems = this.getListItems();
+    let { apps } = this.props;
+    let listItems = apps.map((app) =>
+      <MyGridRow app={app} key={app.path} />
+    );
     return (
       <Table multiSelectable={true}>
         <TableHeader>

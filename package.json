@@ -1,13 +1,13 @@
 {
-  "name": "electron-quick-start",
+  "name": "app-engine-trebuchet",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "A happy litte app that makes manaing App Engine a tad easier.",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "build": "webpack"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/JustinBeckwith/trebuchet",
   "keywords": [
     "Electron",
     "quick",
@@ -36,6 +36,10 @@
     "material-ui": "^0.16.5",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
-    "react-tap-event-plugin": "^2.0.1"
+    "react-redux": "^5.0.1",
+    "react-tap-event-plugin": "^2.0.1",
+    "redux": "^3.6.0",
+    "redux-logger": "^2.7.4",
+    "redux-thunk": "^2.1.0"
   }
 }

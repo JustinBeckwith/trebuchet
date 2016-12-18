@@ -6,11 +6,11 @@ module.exports = {
   devtool: 'source-map',
   entry: [
     'babel-polyfill',
-    './src/scripts/app.js'
+    './app/index.js'
   ],
   output: {
-    path: './src/scripts',
-    filename: 'app.bundle.js',
+    path: './app',
+    filename: 'index.bundle.js',
   },
   module: {
     loaders: [{

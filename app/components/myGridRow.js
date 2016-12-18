@@ -6,7 +6,7 @@ import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import MyStatusIcon from './myStatusIcon';
-import {shell} from 'electron';
+import { browseApp, openConsole, openSDKConsole } from '../actions';
 
 export default class myGridRow extends React.Component {
   constructor(props) {
@@ -15,6 +15,7 @@ export default class myGridRow extends React.Component {
       isHovered: false,
       isMenuOpen: false
     }
+    console.log(this.props);
   }
 
   onRowHover = () => {
@@ -30,20 +31,21 @@ export default class myGridRow extends React.Component {
     // This doesn't work unless there's a value on the menu item that's selected.
     // https://github.com/callemall/material-ui/issues/3995
     //this.setState({ isMenuOpen: open });
-    console.log(value);
+    let { app } = this.props;
     switch(value) {
       case "Run":
         break;
       case "Stop":
+        stopAp(app);
         break;
       case "SDK Console":
-        shell.openExternal(`http://localhost:${this.props.app.adminPort}`);
+        openSDKConsole(app.adminPort);
         break;
       case "Browse":
-        shell.openExternal(`http://localhost:${this.props.app.port}`);
+        browseApp(app.port);
         break;
       case "Dashboard":
-        shell.openExternal(`https://console.cloud.google.com/appengine?project=${this.props.app.name}`);
+        openConsole(app.name);
         break;
     }
   }

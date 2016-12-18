@@ -1,9 +1,9 @@
 import React from 'react';
-import PlayIcon from 'material-ui/svg-icons/av/play-circle-filled';
-import StopIcon from 'material-ui/svg-icons/av/pause-circle-filled';
+import PlayIcon from 'material-ui/svg-icons/maps/directions-run';
+import StopIcon from 'material-ui/svg-icons/content/remove-circle-outline';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
-import {green500, red500, lightBlue500} from 'material-ui/styles/colors';
+import {green500, red500, lightBlue500, grey500} from 'material-ui/styles/colors';
 
 
 export default class myStatusIcon extends React.Component {
@@ -32,7 +32,7 @@ export default class myStatusIcon extends React.Component {
                     loadingColor={red500}
                     style={{display: 'inline-block', position: 'relative'}} />
             case "stopped":
-                return <StopIcon color={red500} />
+                return <StopIcon color={grey500} />
         }
     }
 }
