@@ -1,4 +1,6 @@
 import * as AppStates from './appStates';
+import DevAppWrap from './devAppWrap';
+import {shell} from 'electron';
 
 export default class AppManager {
 
@@ -6,7 +8,8 @@ export default class AppManager {
     this.apps = [];
     this.getApps().then((apps) => {
       this.apps = apps;
-    })
+    });
+    this.devAppWrap = new DevAppWrap();
   }
 
   getApps = () => {
@@ -30,51 +33,40 @@ export default class AppManager {
   startApp = (app, stateNotifier) => {
     app.status = AppStates.STARTING;
     stateNotifier();
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        app.status = AppStates.STARTED;
-        stateNotifier();
-        resolve(app);
-      }, 1000);
+    return this.devAppWrap.startAppServer(app).then(() => {
+      app.status = AppStates.STARTED;
+      stateNotifier();
+      return app;
     });
   }
   
   stopApp = (app, stateNotifier) => {
     app.status = AppStates.STOPPING;
     stateNotifier();
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        app.status = AppStates.STOPPED;
-        stateNotifier();
-        resolve(app);
-      }, 1000);
+    return this.devAppWrap.stopAppServer(app).then(() => {
+      app.status = AppStates.STOPPED;
+      stateNotifier();
+      return app;
     });
   }
-
 }
 
 let data = [{
   name: "shell-php",
-  path: "~/minishell",
+  path: "/Users/beckwith/minishell",
   adminPort: 8003,
-  status: "started",
+  status: "stopped",
   port: 11080
 }, {
-  name: "boo",
-  path: "/some/path/12345",
-  adminPort: 9876,
+  name: "guestbook",
+  path: "/Users/beckwith/guestbook",
+  adminPort: 8006,
   status: "stopped",
-  port: 890
+  port: 1480
 }, {
-  name: "moo",
-  path: "/some/person/45",
-  adminPort: 194,
-  status: "starting",
-  port: 235
-}, {
-  name: "doo",
-  path: "/some/path/1dddd5",
-  adminPort: 3456,
-  status: "stopping",
-  port: 44
+  name: "gcloud-appcfg",
+  path: "/Users/beckwith/Code/demoapps/php/metrics",
+  adminPort: 16080,
+  status: "stopped",
+  port: 8008
 }];

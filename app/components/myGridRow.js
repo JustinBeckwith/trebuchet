@@ -30,7 +30,6 @@ export default class myGridRow extends React.Component {
     this.setState(this.state);
   }
 
-  
   onRequestChange = (source, value) => {  
     // This doesn't work unless there's a value on the menu item that's selected.
     // https://github.com/callemall/material-ui/issues/3995
@@ -45,13 +44,13 @@ export default class myGridRow extends React.Component {
         appManager.stopApp(app, this.updateState);
         break;
       case "SDK Console":
-        appManager.openSDKConsole(app.adminPort);
+        appManager.openSDKConsole(app);
         break;
       case "Browse":
-        appManager.browseApp(app.port);
+        appManager.browseApp(app);
         break;
       case "Dashboard":
-        appManager.openConsole(app.name);
+        appManager.openConsole(app);
         break;
     }
   }
