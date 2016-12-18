@@ -1,15 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Provider} from 'react-redux'
-import configureStore from './store/configureStore'
+import AppManager from './machines/appManager';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import App from './containers/App';
+import MyMainApp from './components/myMainApp';
 
-const store = configureStore();
+const appManager = new AppManager();
 injectTapEventPlugin();
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <MyMainApp manager={appManager} />,
   document.getElementById('app')
 );

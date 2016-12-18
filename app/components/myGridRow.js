@@ -6,16 +6,16 @@ import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import MyStatusIcon from './myStatusIcon';
-import { browseApp, openConsole, openSDKConsole } from '../actions';
+import * as AppStates from './../machines/appStates';
 
 export default class myGridRow extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isHovered: false,
-      isMenuOpen: false
+      isMenuOpen: false,
+      app: this.props.app
     }
-    console.log(this.props);
   }
 
   onRowHover = () => {
@@ -26,26 +26,32 @@ export default class myGridRow extends React.Component {
     this.setState({ isHovered: false });
   }
 
+  updateState = () => {
+    this.setState(this.state);
+  }
+
   
   onRequestChange = (source, value) => {  
     // This doesn't work unless there's a value on the menu item that's selected.
     // https://github.com/callemall/material-ui/issues/3995
     //this.setState({ isMenuOpen: open });
     let { app } = this.props;
+    let appManager = this.props.manager;
     switch(value) {
-      case "Run":
+      case "Start":
+        appManager.startApp(app, this.updateState);
         break;
       case "Stop":
-        stopAp(app);
+        appManager.stopApp(app, this.updateState);
         break;
       case "SDK Console":
-        openSDKConsole(app.adminPort);
+        appManager.openSDKConsole(app.adminPort);
         break;
       case "Browse":
-        browseApp(app.port);
+        appManager.browseApp(app.port);
         break;
       case "Dashboard":
-        openConsole(app.name);
+        appManager.openConsole(app.name);
         break;
     }
   }
@@ -57,7 +63,8 @@ export default class myGridRow extends React.Component {
   }
 
   render() {
-    let { app, order, ...other } = this.props;
+    let { app, manager, ...other } = this.props;
+    app = this.state.app;
     return (
       <TableRow {...other} onRowHover={this.onRowHover} onRowHoverExit={this.onRowHoverExit}>
         
@@ -81,8 +88,8 @@ export default class myGridRow extends React.Component {
             <MenuItem primaryText="Info" value="Info" />
             <MenuItem primaryText="Edit" value="Edit" />
             <Divider />
-            <MenuItem primaryText="Run" value="Run" />
-            <MenuItem primaryText="Stop" value="Stop" />
+            <MenuItem primaryText="Start" value="Start" disabled={app.status == AppStates.STARTED || app.status == AppStates.STARTING} />
+            <MenuItem primaryText="Stop" value="Stop" disabled={app.status == AppStates.STOPPED || app.status == AppStates.STOPPING} />
             <MenuItem primaryText="Browse" value="Browse" />
             <MenuItem primaryText="Logs" value="Logs" />
             <MenuItem primaryText="SDK Console" value="SDK Console" />

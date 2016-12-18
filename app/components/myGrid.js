@@ -6,12 +6,21 @@ export default class MyGrid extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      apps: []
+    }
+  }
+
+  componentDidMount() {
+    let appManager = this.props.manager;
+    appManager.getApps().then((apps) => {
+      this.setState({apps: apps});
+    });
   }
 
   render() {
-    let { apps } = this.props;
-    let listItems = apps.map((app) =>
-      <MyGridRow app={app} key={app.path} />
+    let listItems = this.state.apps.map((app) =>
+      <MyGridRow app={app} key={app.path} manager={this.props.manager} />
     );
     return (
       <Table multiSelectable={true}>
