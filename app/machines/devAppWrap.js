@@ -1,9 +1,12 @@
 const spawn = require('child_process').spawn;
 const _ = require('lodash');
+import * as AppStates from './appStates';
+import EventEmitter from 'events';
 
-export default class devAppWrap {
+export default class devAppWrap extends EventEmitter {
 
   constructor() {
+    super();
     this.appServers = [];
   }
 
@@ -20,11 +23,21 @@ export default class devAppWrap {
           cwd: app.path
         }).on('close', (code) => {
           console.log(`child process exited with code ${code}`);
+          //app.status = AppStates.STOPPED;
+          this.emit('close', app);
+        }).on('error', (err) => {
+          console.log(`child process exited with err`);
+          //app.status = AppStates.STOPPED;
+          this.emit('close', app);
+        }).on('exit', (code, signal) => {
+          console.log(`child process exited with code ${code} and signal ${signal}`);
+          //app.status = AppStates.STOPPED;
+          this.emit('close', app);
         });
         
       server.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
-      })
+      });
       
       server.stderr.on('data', (data) => {
         console.log(`stderr: ${data}`);
@@ -35,7 +48,6 @@ export default class devAppWrap {
         server: server
       });
 
-     
       resolve(server);
     });
 

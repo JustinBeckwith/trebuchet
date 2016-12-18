@@ -7,6 +7,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import MyStatusIcon from './myStatusIcon';
 import * as AppStates from './../machines/appStates';
+import * as AppEvents from './../machines/appEvents';
 
 export default class myGridRow extends React.Component {
   constructor(props) {
@@ -16,6 +17,11 @@ export default class myGridRow extends React.Component {
       isMenuOpen: false,
       app: this.props.app
     }
+    
+    this.props.manager.on(AppEvents.STATUS_CHANGED, (app) => {
+      this.setState(this.state);
+    });
+    
   }
 
   onRowHover = () => {
@@ -26,10 +32,6 @@ export default class myGridRow extends React.Component {
     this.setState({ isHovered: false });
   }
 
-  updateState = () => {
-    this.setState(this.state);
-  }
-
   onRequestChange = (source, value) => {  
     // This doesn't work unless there's a value on the menu item that's selected.
     // https://github.com/callemall/material-ui/issues/3995
@@ -38,10 +40,10 @@ export default class myGridRow extends React.Component {
     let appManager = this.props.manager;
     switch(value) {
       case "Start":
-        appManager.startApp(app, this.updateState);
+        appManager.startApp(app);
         break;
       case "Stop":
-        appManager.stopApp(app, this.updateState);
+        appManager.stopApp(app);
         break;
       case "SDK Console":
         appManager.openSDKConsole(app);
@@ -51,6 +53,12 @@ export default class myGridRow extends React.Component {
         break;
       case "Dashboard":
         appManager.openConsole(app);
+        break;
+      case "Remove":
+        appManager.removeApp(app);
+        break;
+      case "Deploy":
+        appManager.deployApp(app);
         break;
     }
   }
@@ -86,6 +94,7 @@ export default class myGridRow extends React.Component {
                     >
             <MenuItem primaryText="Info" value="Info" />
             <MenuItem primaryText="Edit" value="Edit" />
+            <MenuItem primaryText="Remove" value="Remove" />
             <Divider />
             <MenuItem primaryText="Start" value="Start" disabled={app.status == AppStates.STARTED || app.status == AppStates.STARTING} />
             <MenuItem primaryText="Stop" value="Stop" disabled={app.status == AppStates.STOPPED || app.status == AppStates.STOPPING} />
