@@ -10,7 +10,7 @@ export default class AppManager extends EventEmitter {
 
   constructor() {
     super();
-    this.apps = [];
+    this.apps = null;
     this.getApps().then((apps) => {
       this.apps = apps;
     });
@@ -32,13 +32,17 @@ export default class AppManager extends EventEmitter {
 
   getApps = () => {
     return new Promise((resolve, reject) => {
-      resolve(data);
+      if (this.apps) {
+        resolve(this.apps);
+      } else {
+        resolve(data);
+      }
     });
   }
 
   removeApp = (app) => {
     this.apps = _.remove(this.apps, (item) => {
-      return item.path === app.path;
+      return item.path != app.path;
     });
     this.emit(AppEvents.REMOVED, app);
   }

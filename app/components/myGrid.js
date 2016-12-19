@@ -1,6 +1,7 @@
 import React from 'react';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import MyGridRow from './myGridRow';
+import * as AppEvents from './../machines/appEvents';
 
 export default class MyGrid extends React.Component {
 
@@ -9,6 +10,15 @@ export default class MyGrid extends React.Component {
     this.state = {
       apps: []
     }
+
+    // handle app remove events
+    let manager = this.props.manager;
+    manager.on(AppEvents.REMOVED, (app) => {
+      this.setState({
+        apps: manager.apps
+      });
+    });
+
   }
 
   componentDidMount() {
@@ -20,7 +30,10 @@ export default class MyGrid extends React.Component {
 
   render() {
     let listItems = this.state.apps.map((app) =>
-      <MyGridRow app={app} key={app.path} manager={this.props.manager} />
+      <MyGridRow 
+        app={app} 
+        key={app.path} 
+        manager={this.props.manager} />
     );
     return (
       <Table multiSelectable={true}>

@@ -63,6 +63,9 @@ export default class myGridRow extends React.Component {
       case "Logs":
         appManager.viewLogs(app);
         break;
+      case "Remove":
+        appManager.removeApp(app);
+        break;
     }
   }
 
