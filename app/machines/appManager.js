@@ -88,10 +88,13 @@ export default class AppManager extends EventEmitter {
         this.emit(AppEvents.STATUS_CHANGED, app);
       })
       .on('exit', (code, signal) => {
+        app.status = prevStatus;
         if (code == 0) {
-          app.status = prevStatus;
           this.emit(AppEvents.DEPLOY_SUCCEED, app);  
+        } else {
+          this.emit(AppEvents.DEPLOY_FAILED, app);
         }
+        this.emit(AppEvents.STATUS_CHANGED, app);
       });
   }
 }

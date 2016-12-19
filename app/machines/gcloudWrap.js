@@ -4,10 +4,8 @@ export default class gcloudWrap {
 
   deployApp = (app) => {
     let command = spawn('gcloud', [
-      'app',
-      'deploy',
-      `--project ${app.name}`], 
-      { 
+      'app', 'deploy', 'app.yaml', '-q', '--project', app.name
+      ], { 
         cwd: app.path
       }).on('close', (code) => {
         console.log(`child process exited with code ${code}`);
