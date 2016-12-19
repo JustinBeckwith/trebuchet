@@ -33,6 +33,7 @@ body, html {
   height: calc(100% - 88px);
   overflow-y: auto;
   font-size: 13px;
+  font-family: "Courier New", Courier, monospace;
 }
 
 .logHeader {

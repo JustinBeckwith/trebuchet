@@ -6,3 +6,4 @@ export const REMOVED = "REMOVED";
 export const STATUS_CHANGED = "STATUS_CHANGED";
 export const CLOUD_SDK_NOT_INSTALLED = "CLOUD_SDK_NOT_INSTALLED";
 export const VIEW_LOGS = "VIEW_LOGS";
+export const EMIT_LOGS = "EMIT_LOGS";

@@ -23,7 +23,7 @@ export default class AppManager extends EventEmitter {
       console.log(`app ${app.path} is stopped!`);
       this.emit(AppEvents.STOPPED, app);
       this.emit(AppEvents.STATUS_CHANGED, app);
-    })
+    });
   }
 
   isCloudSdkInstalled = () => {
@@ -66,12 +66,20 @@ export default class AppManager extends EventEmitter {
   startApp = (app) => {
     app.status = AppStates.STARTING;
     this.emit(AppEvents.STATUS_CHANGED, app);
-    return this.devAppWrap.startAppServer(app).then(() => {
-      app.status = AppStates.STARTED;
-      this.emit(AppEvents.STARTED, app);
-      this.emit(AppEvents.STATUS_CHANGED, app);
-      return app;
+    let server = this.devAppWrap.startAppServer(app);
+    server.stdout.setEncoding('utf8');
+    server.stderr.setEncoding('utf8');
+    server.stdout.on('data', (data) => {
+      this.emit(AppEvents.EMIT_LOGS, { app: app, data: data });
     });
+    server.stderr.on('data', (data) => {
+      this.emit(AppEvents.EMIT_LOGS, { app: app, data: data });
+    });
+
+    app.status = AppStates.STARTED;
+    this.emit(AppEvents.STARTED, app);
+    this.emit(AppEvents.STATUS_CHANGED, app);
+    return app;
   }
   
   stopApp = (app) => {
@@ -89,7 +97,7 @@ export default class AppManager extends EventEmitter {
     let prevStatus = app.status;
     app.status = AppStates.DEPLOYING;
     this.emit(AppEvents.STATUS_CHANGED, app);
-    this.gcloudWrap.deployApp(app)
+    let command = this.gcloudWrap.deployApp(app)
       .on('error', (err) => {
         console.log('some kind of error: ' + err);
         app.status = prevStatus;
@@ -105,6 +113,14 @@ export default class AppManager extends EventEmitter {
         }
         this.emit(AppEvents.STATUS_CHANGED, app);
       });
+    command.stdout.setEncoding('utf8');
+    command.stderr.setEncoding('utf8');
+    command.stdout.on('data', (data) => {
+      this.emit(AppEvents.EMIT_LOGS, { app: app, data: data });
+    });
+    command.stderr.on('data', (data) => {
+      this.emit(AppEvents.EMIT_LOGS, { app: app, data: data });
+    });
   }
 }
 
