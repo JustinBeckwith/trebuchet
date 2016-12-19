@@ -16,6 +16,7 @@ export default class AppManager extends EventEmitter {
     });
 
     this.gcloudWrap = new GCloudWrap();
+
     this.devAppWrap = new DevAppWrap();
     this.devAppWrap.on('close', (app) => {
       app.status = AppStates.STOPPED;
@@ -23,6 +24,10 @@ export default class AppManager extends EventEmitter {
       this.emit(AppEvents.STOPPED, app);
       this.emit(AppEvents.STATUS_CHANGED, app);
     })
+  }
+
+  isCloudSdkInstalled = () => {
+    return this.gcloudWrap.checkInstalled();
   }
 
   getApps = () => {

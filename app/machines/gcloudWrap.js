@@ -2,6 +2,15 @@ const spawn = require('child_process').spawn;
 
 export default class gcloudWrap {
 
+  checkInstalled = () => {
+    return new Promise((resolve, reject) => {
+      let command = spawn('gcloud', ['-v'])
+        .on('exit', (code, signal) => {
+          resolve(code == 0); 
+        });
+    });
+  }
+
   deployApp = (app) => {
     let command = spawn('gcloud', [
       'app', 'deploy', 'app.yaml', '-q', '--project', app.name

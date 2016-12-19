@@ -4,6 +4,7 @@ import MyAppBar from './myAppBar';
 import MyGrid from './myGrid';
 import MyToolbar from './myToolbar';
 import MySnackbar from './mySnackbar';
+import MyCloudSdkDialog from './myCloudSdkDialog'
 
 export default class MyMainApp extends React.Component {
   constructor(props) {
@@ -18,6 +19,7 @@ export default class MyMainApp extends React.Component {
           <MyToolbar />
           <MyGrid manager={this.props.manager} />
           <MySnackbar manager={this.props.manager} />
+          <MyCloudSdkDialog manager={this.props.manager} />
         </div>
       </MuiThemeProvider>
     );
