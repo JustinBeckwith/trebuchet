@@ -60,6 +60,9 @@ export default class myGridRow extends React.Component {
       case "Deploy":
         appManager.deployApp(app);
         break;
+      case "Logs":
+        appManager.viewLogs(app);
+        break;
     }
   }
 

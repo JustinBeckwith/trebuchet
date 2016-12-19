@@ -14,7 +14,13 @@ export default class MyLogPane extends React.Component {
     }
     let manager = this.props.manager;
     manager.on(AppEvents.VIEW_LOGS, (app) => {
-      console.log('show a tab');
+      let defaultApp = this.state.apps.length > 0 ? this.state.apps[0].name : null;
+      let definedApp = app ? app.name : null;
+      let appName = definedApp ? definedApp : (defaultApp ? defaultApp : '');
+      this.setState({
+        value: appName,
+        visible: true
+      })
     });
 
     manager.getApps().then((apps) => {
@@ -28,13 +34,20 @@ export default class MyLogPane extends React.Component {
   handleChange = (event, index, value) => {
     this.setState({value});
   };
+
+  closeClick = (e) => {
+    e.preventDefault();
+    this.setState({
+      visible: false
+    });
+  }
   
   render() {
     let logs = this.state.apps.map(app => 
       <MenuItem value={app.name} primaryText={app.name} key={app.name} />
     );
     return (
-      <div className="logViewer">
+      <div className="logViewer" style={{display: this.state.visible ? '' : 'none'}}>
         <div className="logHeader">
           <SelectField style={{fontSize: '13px', color: grey500}}
             className="logSelect"
@@ -42,7 +55,7 @@ export default class MyLogPane extends React.Component {
             onChange={this.handleChange}>
             {logs}
           </SelectField>
-          <IconButton className="logClose">
+          <IconButton className="logClose" onClick={this.closeClick}>
             <CloseIcon color={grey500} />
           </IconButton>
           <div style={{clear: "both"}}></div>

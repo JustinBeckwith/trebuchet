@@ -45,7 +45,7 @@ export default class MyMainApp extends React.Component {
       <MuiThemeProvider muiTheme={muiTheme}>
         <div>
           <MyAppBar />
-          <MyToolbar />
+          <MyToolbar manager={this.props.manager} />
           <MyGrid manager={this.props.manager} />
           <MySnackbar manager={this.props.manager} />
           <MyCloudSdkDialog manager={this.props.manager} />

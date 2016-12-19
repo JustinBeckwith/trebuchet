@@ -7,45 +7,39 @@ import MenuItem from 'material-ui/MenuItem';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import * as AppEvents from './../machines/appEvents';
 
 export default class MyToolbar extends React.Component {
 
   constructor(props) {
     super(props);
-    this.handleChange = (event, index, value) => this.setState({value});
-    this.state = {
-      value: 3,
-    };
+  }
+
+  handleChange = (event, value) => {
+    switch(value) {
+      case AppEvents.VIEW_LOGS:
+        this.props.manager.viewLogs();
+        break;
+    }
   }
 
   render() {
     return (
       <Toolbar>
         <ToolbarGroup firstChild={true}>
-          <DropDownMenu value={this.state.value} onChange={this.handleChange}>
-            <MenuItem value={1} primaryText="All Broadcasts" />
-            <MenuItem value={2} primaryText="All Voice" />
-            <MenuItem value={3} primaryText="All Text" />
-            <MenuItem value={4} primaryText="Complete Voice" />
-            <MenuItem value={5} primaryText="Complete Text" />
-            <MenuItem value={6} primaryText="Active Voice" />
-            <MenuItem value={7} primaryText="Active Text" />
-          </DropDownMenu>
+          <div></div>
         </ToolbarGroup>
         <ToolbarGroup>
           <ToolbarTitle text="Options" />
           <FontIcon className="muidocs-icon-custom-sort" />
           <ToolbarSeparator />
-          <RaisedButton label="Start All" primary={true} />
-          <IconMenu
-            iconButtonElement={
+          <RaisedButton label="Start All" primary={true}  />
+          <IconMenu  iconButtonElement={
               <IconButton touch={true}>
                 <NavigationExpandMoreIcon />
               </IconButton> 
-            }
-          >
-            <MenuItem primaryText="Download" />
-            <MenuItem primaryText="More Info" />
+            } onChange={this.handleChange}>
+            <MenuItem primaryText="View Logs" value={AppEvents.VIEW_LOGS} />
           </IconMenu>
         </ToolbarGroup>
       </Toolbar>
