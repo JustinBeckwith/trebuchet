@@ -42,6 +42,10 @@ export default class AppManager extends EventEmitter {
     shell.openExternal(`http://localhost:${app.port}`);
   }
 
+  browseProdApp = (app) => {
+    shell.openExternal(`https://${app.name}.appspot.com`);
+  }
+
   openSDKConsole = (app) => {
     shell.openExternal(`http://localhost:${app.adminPort}`);
   }
@@ -74,7 +78,7 @@ export default class AppManager extends EventEmitter {
 
   deployApp = (app) => {
     let prevStatus = app.status;
-    dev.status = AppStates.DEPLOYING;
+    app.status = AppStates.DEPLOYING;
     this.emit(AppEvents.STATUS_CHANGED, app);
     this.gcloudWrap.deployApp(app)
       .on('error', (err) => {

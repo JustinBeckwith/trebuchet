@@ -11,7 +11,9 @@ function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1024, 
-    height: 768
+    height: 768,
+    titleBarStyle: 'hidden',
+    icon: path.join(__dirname, 'app/images/png/64x64.png')
   });
   mainWindow.maximize();
 
@@ -54,7 +56,4 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow()
   }
-})
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+});

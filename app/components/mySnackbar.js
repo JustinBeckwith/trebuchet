@@ -6,7 +6,14 @@ export default class mySnackbar extends React.Component {
 
   constructor(props) {
     super(props);
-    
+
+    this.snacktions = {
+      RESTART: 'restart',
+      VIEW_LOG: 'view log',
+      OPEN: 'open',
+      BROWSE: 'browse'
+    }
+  
     this.state = {
       message: 'Deployment complete.',
       open: false
@@ -17,25 +24,29 @@ export default class mySnackbar extends React.Component {
       this.setState({ 
         message: `${app.name} stopped.`,
         open: true,
-        state: "restart"
+        action: this.snacktions.RESTART,
+        app: app
       });
     }).on(AppEvents.DEPLOY_FAILED, (app) => {
       this.setState({ 
         message: 'Deployment failed.',
         open: true,
-        state: "view log"
+        action: this.snacktions.VIEW_LOG,
+        app: app
       });
     }).on(AppEvents.DEPLOY_SUCCEED, (app) => {
       this.setState({ 
         message: 'Deployment complete.',
         open: true,
-        state: "open"
+        action: this.snacktions.BROWSE,
+        app: app
       });
     }).on(AppEvents.STARTED, (app) => {
       this.setState({ 
         message: `${app.name} started.`,
         open: true,
-        state: "open"
+        action: this.snacktions.OPEN,
+        app: app
       });
     });
   }
@@ -47,10 +58,24 @@ export default class mySnackbar extends React.Component {
   };
 
   handleActionTouchTap = () => {
+    let appManager = this.props.manager;
     this.setState({
       open: false,
     });
-    // do work
+    switch(this.state.action) {
+      case this.snacktions.OPEN:
+        appManager.browseApp(this.state.app);
+        break;
+      case this.snacktions.BROWSE:
+        appManager.browseProdApp(this.state.app);
+        break;
+      case this.snacktions.RESTART:
+        appManager.startApp(this.state.app);
+        break;
+      case this.snacktions.VIEW_LOG:
+        appManager.browseApp(this.state.app);
+        break;
+    }
   };
 
   handleRequestClose = () => {
