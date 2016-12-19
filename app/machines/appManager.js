@@ -59,6 +59,10 @@ export default class AppManager extends EventEmitter {
     shell.openExternal(`https://console.cloud.google.com/appengine?project=${app.name}`);
   }
 
+  viewLogs = (app) => {
+    this.emit(AppEvents.VIEW_LOGS, app);
+  }
+
   startApp = (app) => {
     app.status = AppStates.STARTING;
     this.emit(AppEvents.STATUS_CHANGED, app);

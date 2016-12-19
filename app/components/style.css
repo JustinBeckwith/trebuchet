@@ -1,6 +1,8 @@
 body, html {
   margin: 0px;
   padding: 0px;
+  font-family: Roboto, sans-serif;
+  overflow: hidden;
 }
 
 .smallCol {
@@ -13,4 +15,36 @@ body, html {
 
 .iconCol {
   width: 15px;
+}
+
+.logClose {
+  float: right;
+}
+
+.logSelect {
+  float: left;
+  font-size: 13px;
+}
+
+.logContent {
+  background-color: #333;
+  color: #DDD;
+  padding: 20px;
+  height: calc(100% - 88px);
+  overflow-y: auto;
+  font-size: 13px;
+}
+
+.logHeader {
+  background-color: #E8E8E8;
+  padding-left: 15px;
+  font-size: 13px;
+}
+
+.logViewer {
+  height: 400px;
+  position: absolute;
+  background-color: #333;
+  bottom: 0;
+  width: 100%;
 }

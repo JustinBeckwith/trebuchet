@@ -5,3 +5,4 @@ export const DEPLOY_FAILED = "DEPLOY_FAILED";
 export const REMOVED = "REMOVED";
 export const STATUS_CHANGED = "STATUS_CHANGED";
 export const CLOUD_SDK_NOT_INSTALLED = "CLOUD_SDK_NOT_INSTALLED";
+export const VIEW_LOGS = "VIEW_LOGS";
