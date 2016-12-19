@@ -23,6 +23,15 @@ export default class MyToolbar extends React.Component {
     }
   }
 
+  startAll = () => {
+    let manager = this.props.manager;
+    manager.getApps().then((apps) => {
+      apps.map((app) => {
+        manager.startApp(app);
+      });
+    });
+  }
+
   render() {
     return (
       <Toolbar>
@@ -33,7 +42,7 @@ export default class MyToolbar extends React.Component {
           <ToolbarTitle text="Options" />
           <FontIcon className="muidocs-icon-custom-sort" />
           <ToolbarSeparator />
-          <RaisedButton label="Start All" primary={true}  />
+          <RaisedButton label="Start All" primary={true} onClick={this.startAll}  />
           <IconMenu  iconButtonElement={
               <IconButton touch={true}>
                 <NavigationExpandMoreIcon />
