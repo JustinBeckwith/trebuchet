@@ -5,6 +5,7 @@ import {shell} from 'electron';
 import EventEmitter from 'events';
 const _ = require('lodash');
 import * as AppEvents from './appEvents';
+import LogManager from './logManager';
 
 export default class AppManager extends EventEmitter {
 
@@ -15,8 +16,8 @@ export default class AppManager extends EventEmitter {
       this.apps = apps;
     });
 
+    this.logManager = new LogManager();
     this.gcloudWrap = new GCloudWrap();
-
     this.devAppWrap = new DevAppWrap();
     this.devAppWrap.on('close', (app) => {
       app.status = AppStates.STOPPED;
@@ -70,15 +71,8 @@ export default class AppManager extends EventEmitter {
   startApp = (app) => {
     app.status = AppStates.STARTING;
     this.emit(AppEvents.STATUS_CHANGED, app);
-    let server = this.devAppWrap.startAppServer(app);
-    server.stdout.setEncoding('utf8');
-    server.stderr.setEncoding('utf8');
-    server.stdout.on('data', (data) => {
-      this.emit(AppEvents.EMIT_LOGS, { app: app, data: data });
-    });
-    server.stderr.on('data', (data) => {
-      this.emit(AppEvents.EMIT_LOGS, { app: app, data: data });
-    });
+    let process = this.devAppWrap.startAppServer(app);
+    this.logManager.attachLogger(app, process);
 
     app.status = AppStates.STARTED;
     this.emit(AppEvents.STARTED, app);
@@ -117,14 +111,7 @@ export default class AppManager extends EventEmitter {
         }
         this.emit(AppEvents.STATUS_CHANGED, app);
       });
-    command.stdout.setEncoding('utf8');
-    command.stderr.setEncoding('utf8');
-    command.stdout.on('data', (data) => {
-      this.emit(AppEvents.EMIT_LOGS, { app: app, data: data });
-    });
-    command.stderr.on('data', (data) => {
-      this.emit(AppEvents.EMIT_LOGS, { app: app, data: data });
-    });
+    this.logManager.attachLogger(app, command);
   }
 }
 
