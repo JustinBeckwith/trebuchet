@@ -38,6 +38,7 @@
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-tap-event-plugin": "^2.0.1",
+    "tail": "^1.2.1",
     "tmp": "^0.0.31",
     "uuid": "^3.0.1"
   }

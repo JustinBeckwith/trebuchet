@@ -2600,6 +2600,10 @@ symbol-observable@^0.2.4:
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-0.2.4.tgz#95a83db26186d6af7e7a18dbd9760a2f86d08f40"
 
+tail:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/tail/-/tail-1.2.1.tgz#c998a0cd9f8bf6dce780a6bc7339e66371e0db3f"
+
 tapable@^0.1.8, tapable@~0.1.8:
   version "0.1.10"
   resolved "https://registry.yarnpkg.com/tapable/-/tapable-0.1.10.tgz#29c35707c2b70e50d07482b5d202e8ed446dafd4"

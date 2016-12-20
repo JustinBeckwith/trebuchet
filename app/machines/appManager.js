@@ -31,6 +31,13 @@ export default class AppManager extends EventEmitter {
     return this.gcloudWrap.checkInstalled();
   }
 
+  getApp = (name) => {
+    return this.getApps().then((apps) => {
+      let app = _.find(apps, { name: name });
+      return app;
+    });
+  }
+
   getApps = () => {
     return new Promise((resolve, reject) => {
       if (this.apps) {
@@ -72,12 +79,13 @@ export default class AppManager extends EventEmitter {
     app.status = AppStates.STARTING;
     this.emit(AppEvents.STATUS_CHANGED, app);
     let process = this.devAppWrap.startAppServer(app);
-    this.logManager.attachLogger(app, process);
-
-    app.status = AppStates.STARTED;
-    this.emit(AppEvents.STARTED, app);
-    this.emit(AppEvents.STATUS_CHANGED, app);
-    return app;
+    return this.logManager.attachLogger(app, process).then((logger) => {
+      this.emit(AppEvents.EMIT_LOGS, app);
+      app.status = AppStates.STARTED;
+      this.emit(AppEvents.STARTED, app);
+      this.emit(AppEvents.STATUS_CHANGED, app);
+      return app;
+    });
   }
   
   stopApp = (app) => {
@@ -112,6 +120,11 @@ export default class AppManager extends EventEmitter {
         this.emit(AppEvents.STATUS_CHANGED, app);
       });
     this.logManager.attachLogger(app, command);
+    this.emit(AppEvents.EMIT_LOGS, app);
+  }
+
+  getAppLog = (app) => {
+    return this.logManager.getAppLog(app);
   }
 }
 

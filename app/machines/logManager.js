@@ -2,6 +2,7 @@ import os from 'os';
 import path from 'path';
 import fs from 'fs';
 import uuid from 'uuid/v4';
+import {Tail} from 'tail';
 
 const tmpDirName = 'trebuchet';
 
@@ -21,8 +22,8 @@ export default class LogManager {
       .then((tmpdir) => {
         return this.createAppLogIfNotExists(tmpdir, app);
       })
-      .then((writeStream) => {
-        this.configureLogger(process, writeStream);
+      .then((logEntry) => {
+        this.configureLogger(process, logEntry.writeStream);
       })
       .catch((err) => {
         console.log("ERROR: " + err);
@@ -66,23 +67,47 @@ export default class LogManager {
     return new Promise((resolve, reject) => {
       
       // check to see if we already have a log for the app
-      let writeStream = this.logMap.get(app.name);
-      if (writeStream) {
-        return resolve(writeStream);
+      let logEntry = this.logMap.get(app.name);
+      if (logEntry) {
+        return resolve(logEntry);
       } 
 
       // create the app log file in tmp
       let logPath = path.join(tmpDir, uuid());
       console.log('new log path! ' + logPath);
-      writeStream = fs.createWriteStream(logPath)
+      let writeStream = fs.createWriteStream(logPath)
         .on('error', (error) => {
           reject(error);
         })
       
       // make sure to update the map with the new log file
-      this.logMap.set(app.name, writeStream);
-      return resolve(writeStream);
+      logEntry = { 
+        logPath: logPath,
+        writeStream: writeStream
+      };
+      this.logMap.set(app.name, logEntry);
+      return resolve(logEntry);
     });
+  }
+
+  getAppLog(app) {
+    let logEntry = this.logMap.get(app.name);
+    if (logEntry) {
+      if (logEntry.tail) {
+        return logEntry.tail;
+      }
+      let tail = new Tail(logEntry.logPath, { fromBeginning: true })
+        .on('line', (data) => {
+          //console.log('data);
+        })
+        .on("error", (err) => {
+          console.log('ERROR: ', error);
+        });
+        
+      this.logMap.set(app.name, Object.assign(logEntry, { tail: tail }));
+      return tail;
+    } 
+    return null;
   }
 
 }
