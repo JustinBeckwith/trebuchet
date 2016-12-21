@@ -6,6 +6,7 @@ import MyToolbar from './myToolbar';
 import MySnackbar from './mySnackbar';
 import MyCloudSdkDialog from './myCloudSdkDialog';
 import MyLogPane from './myLogPane';
+import MyNewButton from './myNewButton';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {fade} from 'material-ui/utils/colorManipulator';
 import {
@@ -43,12 +44,15 @@ export default class MyMainApp extends React.Component {
   render() {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
-        <div>
-          <MyAppBar />
-          <MyToolbar manager={this.props.manager} />
-          <MyGrid manager={this.props.manager} />
-          <MySnackbar manager={this.props.manager} />
-          <MyCloudSdkDialog manager={this.props.manager} />
+        <div className="fullContainer">
+          <div className="topContainer">
+            <MyAppBar />
+            <MyToolbar manager={this.props.manager} />
+            <MyGrid manager={this.props.manager} />
+            <MySnackbar manager={this.props.manager} />
+            <MyCloudSdkDialog manager={this.props.manager} />
+            <MyNewButton />
+          </div>
           <MyLogPane manager={this.props.manager} />
         </div>
       </MuiThemeProvider>
