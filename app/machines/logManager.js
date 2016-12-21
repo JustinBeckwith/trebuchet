@@ -2,7 +2,8 @@ import os from 'os';
 import path from 'path';
 import fs from 'fs';
 import uuid from 'uuid/v4';
-import {Tail} from 'tail';
+//import {Tail} from 'tail';
+import Tail from 'always-tail';
 
 const tmpDirName = 'trebuchet';
 
@@ -37,8 +38,8 @@ export default class LogManager {
   configureLogger(process, writeStream) {
     process.stdout.setEncoding('utf8');
     process.stderr.setEncoding('utf8');
-    process.stdout.pipe(writeStream);
-    process.stderr.pipe(writeStream);
+    process.stdout.pipe(writeStream, { end: false });
+    process.stderr.pipe(writeStream, { end: false });
   }
 
   /*
@@ -69,6 +70,7 @@ export default class LogManager {
       // check to see if we already have a log for the app
       let logEntry = this.logMap.get(app.name);
       if (logEntry) {
+        console.log('App log already exists, returning ' + logEntry.logPath);
         return resolve(logEntry);
       } 
 
@@ -93,12 +95,13 @@ export default class LogManager {
   getAppLog(app) {
     let logEntry = this.logMap.get(app.name);
     if (logEntry) {
+      // detach the old watcher first
       if (logEntry.tail) {
-        return logEntry.tail;
+        logEntry.tail.unwatch();
       }
-      let tail = new Tail(logEntry.logPath, { fromBeginning: true })
+      let tail = new Tail(logEntry.logPath, '\n', { start: 0 })
         .on('line', (data) => {
-          //console.log('data);
+          console.log(data);
         })
         .on("error", (err) => {
           console.log('ERROR: ', error);

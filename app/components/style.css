@@ -17,10 +17,6 @@ body, html {
   width: 15px;
 }
 
-.logClose {
-  float: right;
-}
-
 .logSelect {
   float: left;
   font-size: 13px;
