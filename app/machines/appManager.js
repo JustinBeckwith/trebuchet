@@ -126,6 +126,14 @@ export default class AppManager extends EventEmitter {
   getAppLog = (app) => {
     return this.logManager.getAppLog(app);
   }
+
+  newApp = () => {
+    this.emit(AppEvents.NEW_APP);
+  }
+
+  importApp = () => {
+    this.emit(AppEvents.IMPORT_APP);
+  }
 }
 
 let data = [{

@@ -1750,7 +1750,7 @@ loader-utils@^0.2.11:
     json5 "^0.5.0"
     object-assign "^4.0.1"
 
-lodash, lodash@^4.17.2, lodash@^4.2.0:
+lodash, lodash@^4.14.2, lodash@^4.17.2, lodash@^4.2.0:
   version "4.17.2"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.2.tgz#34a3055babe04ce42467b607d700072c7ff6bf42"
 
@@ -2147,6 +2147,12 @@ progress-stream@^1.1.0:
   dependencies:
     speedometer "~0.1.2"
     through2 "~0.2.3"
+
+project-name-generator:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/project-name-generator/-/project-name-generator-2.1.3.tgz#30e1d2413e2013d69724f2a621a0cd583e3371b1"
+  dependencies:
+    lodash "^4.14.2"
 
 promise@^7.1.1:
   version "7.1.1"
