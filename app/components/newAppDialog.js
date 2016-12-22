@@ -193,8 +193,8 @@ export default class newAppDialog extends React.Component {
               type="number" />
           </div>
         </div>
-        <div style={{float: 'right', border: '1px solid #CCC', width: '400px', height: '270px', marginTop: '20px'}}>
-          <img src={'./images/svg/' + this.state.runtime + '.svg'} style={{width: '400px', height: '270px', margin: 'auto', display: 'block'}}/>
+        <div style={{float: 'right', border: '1px solid #CCC', width: 'calc(100% - 270px)', height: '270px', marginTop: '20px'}}>
+          <img src={'./images/svg/' + this.state.runtime + '.svg'} style={{width: '100%', height: '270px', margin: 'auto', display: 'block'}}/>
           <div style={{float:'right', whiteSpace: 'nowrap'}}>
            <Checkbox
               checkedIcon={<CloudDone />}

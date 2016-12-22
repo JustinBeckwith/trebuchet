@@ -17,6 +17,10 @@ export default class MyLogPane extends React.Component {
     
     let manager = this.props.manager;
     
+    /**
+     * The user asked for the logs viewer to be opened.  Show it, and 
+     * choose a default log to see.  Bind the logger to the view. 
+     */
     manager.on(AppEvents.VIEW_LOGS, (app) => {
       if (!this.state.value || (app && this.state.value != app.name)) {
         let defaultApp = this.state.apps.length > 0 ? this.state.apps[0].name : null;
@@ -30,6 +34,41 @@ export default class MyLogPane extends React.Component {
       });
     });
 
+    /**
+     * An app got removed.  Remove the item from the list of available logs,
+     * and fix up the UI if it was currently selected. 
+     */
+    manager.on(AppEvents.REMOVED, (app) => {
+      manager.getApps().then((apps) => {
+        let currentValue = this.state.value;
+        let nextValue = currentValue;
+        if (apps.length == 0) {
+          nextValue = '';
+        } else if (currentValue == app.name) {
+          nextValue = apps[0].name;
+        } 
+        this.setState({
+          apps: apps,
+          value: nextValue,
+        });
+      });
+    });
+
+    /**
+     * A new app was created.  Make sure it gets added to the list of logs. 
+     */
+    manager.on(AppEvents.APP_CREATED, (app) => {
+      manager.getApps().then((apps) => {
+        this.setState({
+          apps: apps,
+          value: app.name,
+        });
+      });
+    });
+
+    /**
+     * New logs are available! 
+     */
     manager.on(AppEvents.EMIT_LOGS, (app) => { 
       if (this.state.value != app.name) {
         this.setState({
