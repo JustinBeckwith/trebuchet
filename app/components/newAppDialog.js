@@ -46,7 +46,6 @@ export default class newAppDialog extends React.Component {
 
     this.runtimes = [
       { key: 'python', label: 'Python'},
-      { key: 'java', label: 'Java'},
       { key: 'go', label: 'Go'},
       { key: 'php', label: 'PHP'}
     ];

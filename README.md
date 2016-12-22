@@ -3,11 +3,11 @@ App Engine Trebuchet is a replacement for the App Engine Launcher.  It's super u
 
 ## TODO
 - Wait on process up to declare success on starts and pipe the error
-- Add create / import experience
+- Add import experience
+- Add flex support
 - Tests, tests, tests
 - Logs search
 - Log split/resize control
-- Ensure process start failures (path doesn't exist) are piped to Logs
 - Implement error reporting system 
 - Figure out packaging
 - Implement auto-update
