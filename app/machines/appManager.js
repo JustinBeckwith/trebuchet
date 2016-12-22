@@ -3,10 +3,11 @@ import DevAppWrap from './devAppWrap';
 import GCloudWrap from './gcloudWrap';
 import {shell} from 'electron';
 import EventEmitter from 'events';
-const _ = require('lodash');
+import _ from 'lodash';
 import * as AppEvents from './appEvents';
 import LogManager from './logManager';
 import path from 'path';
+import db from 'localforage';
 
 export default class AppManager extends EventEmitter {
 
@@ -40,12 +41,17 @@ export default class AppManager extends EventEmitter {
   }
 
   getApps = () => {
-    return new Promise((resolve, reject) => {
-      if (this.apps) {
-        resolve(this.apps);
-      } else {
-        resolve(data);
-      }
+    // return from local memory after initial load
+    if (this.apps) {
+      return new Promise((resolve, reject) =>  resolve(this.apps));
+    } 
+    
+    // attempt to load from IndexedDB
+    return db.getItem('apps').then((apps) => {
+      return apps;
+    }).catch((err) => {
+      console.log(err);
+      return [];
     });
   }
 
@@ -53,6 +59,7 @@ export default class AppManager extends EventEmitter {
     this.apps = _.remove(this.apps, (item) => {
       return item.path != app.path;
     });
+    db.setItem('apps', this.apps);
     this.emit(AppEvents.REMOVED, app);
   }
   
@@ -142,6 +149,7 @@ export default class AppManager extends EventEmitter {
       status: AppStates.STOPPED
     }
     this.apps.push(app);
+    db.setItem('apps', this.apps);
     this.emit(AppEvents.APP_CREATED, app);
   }
 
@@ -149,23 +157,3 @@ export default class AppManager extends EventEmitter {
     this.emit(AppEvents.IMPORT_APP);
   }
 }
-
-let data = [{
-  name: "shell-php",
-  path: "/Users/beckwith/minishell/doesntexist",
-  adminPort: 8003,
-  status: "stopped",
-  port: 11080
-}, {
-  name: "guestbook",
-  path: "/Users/beckwith/guestbook",
-  adminPort: 8006,
-  status: "stopped",
-  port: 1480
-}, {
-  name: "gcloud-appcfg",
-  path: "/Users/beckwith/Code/demoapps/php/metrics",
-  adminPort: 16080,
-  status: "stopped",
-  port: 8008
-}];
