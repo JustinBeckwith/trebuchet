@@ -1,13 +1,14 @@
 import * as AppStates from './appStates';
 import DevAppWrap from './devAppWrap';
 import GCloudWrap from './gcloudWrap';
-import {shell} from 'electron';
+import {shell, remote} from 'electron';
 import EventEmitter from 'events';
 import _ from 'lodash';
 import * as AppEvents from './appEvents';
 import LogManager from './logManager';
 import path from 'path';
 import db from 'localforage';
+import fse from 'fs-extra';
 
 export default class AppManager extends EventEmitter {
 
@@ -150,7 +151,13 @@ export default class AppManager extends EventEmitter {
     }
     this.apps.push(app);
     db.setItem('apps', this.apps);
-    this.emit(AppEvents.APP_CREATED, app);
+
+    // attempt to create the app directory
+    console.log(remote.app.getAppPath());
+    let srcDir = `${remote.app.getAppPath()}/templates/${appRequest.runtime}/standard/basic`;
+    fse.copy(srcDir, app.path, (err) => {
+      this.emit(AppEvents.APP_CREATED, app);
+    });
   }
 
   importApp = () => {
