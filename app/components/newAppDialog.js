@@ -2,14 +2,14 @@ import React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import Checkbox from 'material-ui/Checkbox';
 import * as AppEvents from './../machines/appEvents';
 import {remote} from 'electron';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import FileUpload from 'material-ui/svg-icons/file/file-upload';
+import CloudDone from 'material-ui/svg-icons/file/cloud-done';
+import CloudOff from 'material-ui/svg-icons/file/cloud-off';
 import generate from 'project-name-generator';
 import os from 'os';
 import path from 'path';
@@ -21,7 +21,7 @@ export default class newAppDialog extends React.Component {
     super(props);
     
     this.state = {
-      open: false
+      open: false,
     }
     
     let localPath = path.join(os.homedir(), "AppEngineApps");
@@ -39,6 +39,7 @@ export default class newAppDialog extends React.Component {
           adminPort: port+1,
           path: localPath,
           runtime: "python",
+          autoCreate: true
         });
       });
     });    
@@ -101,6 +102,12 @@ export default class newAppDialog extends React.Component {
         pathModified: true,
       });
     }
+  }
+
+  onAutoCreateCheck = (event, isInputChecked) => {
+    this.setState({
+      autoCreate: isInputChecked,
+    });
   }
 
   getNextPort = () => {
@@ -181,9 +188,18 @@ export default class newAppDialog extends React.Component {
           </div>
         </div>
         <div style={{float: 'right', border: '1px solid #CCC', width: '400px', height: '270px', marginTop: '20px'}}>
-          <img src={'./images/svg/' + this.state.runtime + '.svg'} style={{width: '270px', height: '270px', margin: 'auto', display: 'block'}}/>
+          <img src={'./images/svg/' + this.state.runtime + '.svg'} style={{width: '400px', height: '270px', margin: 'auto', display: 'block'}}/>
+          <div style={{float:'right', whiteSpace: 'nowrap'}}>
+           <Checkbox
+              checkedIcon={<CloudDone />}
+              uncheckedIcon={<CloudOff />}
+              label="Create cloud project"
+              checked={this.state.autoCreate}
+              onCheck={this.onAutoCreateCheck}
+              labelStyle={{fontSize: '12px', textTransform: 'uppercase', fontWeight: 'bold', color: '#777'}} />
+          </div>
         </div>
-        <div style={{clear: 'both'}}>
+        <div style={{clear: 'both', marginTop: '15px'}}>
           <TextField 
             style={{width: 'calc(100% - 110px)', marginRight: '20px'}}
             floatingLabelText="Application directory"
