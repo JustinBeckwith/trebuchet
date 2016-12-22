@@ -13,6 +13,7 @@ import FileUpload from 'material-ui/svg-icons/file/file-upload';
 import generate from 'project-name-generator';
 import os from 'os';
 import path from 'path';
+import fs from 'fs';
 
 export default class newAppDialog extends React.Component {
 
@@ -22,22 +23,32 @@ export default class newAppDialog extends React.Component {
     this.state = {
       open: false
     }
-
+    
+    let localPath = path.join(os.homedir(), "AppEngineApps");
+    fs.mkdir(localPath, err => {});
+    
     let manager = this.props.manager;
     manager.on(AppEvents.NEW_APP, () => {
       this.getNextPort().then((port) => {
         let name = generate({ number: true }).dashed;
-        let localPath = path.join(os.homedir(), "appengine", name);
+        let localPath = path.join(os.homedir(), "AppEngineApps");
         this.setState({
           open: true,
           project: name,
           port: port,
           adminPort: port+1,
           path: localPath,
-          runtime: "python27",
+          runtime: "python",
         });
       });
-    });
+    });    
+
+    this.runtimes = [
+      { key: 'python', label: 'Python'},
+      { key: 'java', label: 'Java'},
+      { key: 'go', label: 'Go'},
+      { key: 'php', label: 'PHP'}
+    ];
   
   }
 
@@ -55,7 +66,7 @@ export default class newAppDialog extends React.Component {
     }, () => {
       if (!this.state.pathModified) {
         this.setState({
-          path: path.join(os.homedir(), "appengine", this.state.project)
+          path: path.join(os.homedir(), "AppEngineApps")
         });
       }
     });
@@ -73,19 +84,23 @@ export default class newAppDialog extends React.Component {
     });
   }
 
-  onRuntimeChange = (event) => {
+  onRuntimeChange = (event, key, value) => {
     this.setState({
-      runtime: event.target.value,
+      runtime: value,
     });
   }
 
   onUploadClick = () => {
-    let result = remote.dialog.showOpenDialog({properties: ['openDirectory']});
-    console.log(result);
-    this.setState({
-      path: result,
-      pathModified: true,
+    let result = remote.dialog.showOpenDialog({
+      properties: ['openDirectory', 'createDirectory'],
+      defaultPath: this.state.path
     });
+    if (result && result.length > 0) {
+      this.setState({
+        path: result[0],
+        pathModified: true,
+      });
+    }
   }
 
   getNextPort = () => {
@@ -115,6 +130,10 @@ export default class newAppDialog extends React.Component {
       />,
     ];
 
+    const runtimes = this.runtimes.map((runtime) => {
+      return <MenuItem value={runtime.key} primaryText={runtime.label} key={runtime.key} />
+    });
+
     return (
       <Dialog
         title="New application"
@@ -124,44 +143,58 @@ export default class newAppDialog extends React.Component {
         onRequestClose={this.handleClose}
         autoScrollBodyContent={true}>
 
-        <div>
-          <TextField 
-            hintText="Project" 
-            value={this.state.project}
-            onChange={this.onProjectChange} />
+        <div style={{width: '250px', float: 'left'}}>
+          <div>
+            <TextField 
+              fullWidth={true}
+              hintText="Project" 
+              floatingLabelText="Project name"
+              value={this.state.project}
+              onChange={this.onProjectChange} />
+          </div>
+          <div>
+            <SelectField 
+              style={{width:'100px'}}
+              floatingLabelText="Language"
+              value={this.state.runtime}
+              onChange={this.onRuntimeChange}>
+              {runtimes}
+            </SelectField>
+          </div>
+          <div>
+            <TextField 
+              style={{width:'100px'}}
+              floatingLabelText="Local port"
+              hintText="Local port" 
+              value={this.state.port}
+              onChange={this.onPortChange}
+              type="number" />
+          </div>
+          <div>
+            <TextField 
+              style={{width:'100px'}}
+              floatingLabelText="Admin port"
+              hintText="Admin Port"
+              value={this.state.adminPort}
+              onChange={this.onAdminPortChange} 
+              type="number" />
+          </div>
         </div>
-        <div>
+        <div style={{float: 'right', border: '1px solid #CCC', width: '400px', height: '270px', marginTop: '20px'}}>
+          <img src={'./images/svg/' + this.state.runtime + '.svg'} style={{width: '270px', height: '270px', margin: 'auto', display: 'block'}}/>
+        </div>
+        <div style={{clear: 'both'}}>
           <TextField 
+            style={{width: 'calc(100% - 110px)', marginRight: '20px'}}
+            floatingLabelText="Application directory"
             hintText="Application directory" 
             value={this.state.path}
             onChange={this.onPathChange}
             disabled={true} />
-          <FloatingActionButton 
-            mini={true} 
-            secondary={true}
+          <RaisedButton 
+            label="..."
             onClick={this.onUploadClick}>
-            <FileUpload />
-          </FloatingActionButton>
-        </div>
-        <div>
-          <SelectField 
-            value={this.state.runtime}
-            onChange={this.onRuntimeChange}>
-            <MenuItem value="python27" primaryText="Python 2.7" key="python27" />
-            <MenuItem value="PHP" primaryText="PHP" key="PHP" />
-          </SelectField>
-        </div>
-        <div>
-          <TextField 
-            hintText="Port" 
-            value={this.state.port}
-            onChange={this.onPortChange} />
-        </div>
-        <div>
-          <TextField 
-            hintText="Admin Port"
-            value={this.state.adminPort}
-            onChange={this.onAdminPortChange} />
+          </RaisedButton>
         </div>
       </Dialog>
     );

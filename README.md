@@ -11,3 +11,4 @@ App Engine Trebuchet is a replacement for the App Engine Launcher.  It's super u
 - Implement error reporting system 
 - Figure out packaging
 - Implement auto-update
+- Swap auto-name library for something custom made (and not likely to get me in trouble)
