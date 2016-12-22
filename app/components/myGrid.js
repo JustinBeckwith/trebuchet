@@ -11,20 +11,24 @@ export default class MyGrid extends React.Component {
       apps: []
     }
 
-    // handle app remove events
     let manager = this.props.manager;
+
+    manager.getApps().then((apps) => {
+      this.setState({apps: apps});
+    });
+
+    // handle app remove events
     manager.on(AppEvents.REMOVED, (app) => {
       this.setState({
         apps: manager.apps
       });
     });
 
-  }
-
-  componentDidMount() {
-    let appManager = this.props.manager;
-    appManager.getApps().then((apps) => {
-      this.setState({apps: apps});
+    // handle app add events
+    manager.on(AppEvents.APP_CREATED, (app) => {
+      this.setState({
+        apps: manager.apps
+      });
     });
   }
 

@@ -6,6 +6,7 @@ import EventEmitter from 'events';
 const _ = require('lodash');
 import * as AppEvents from './appEvents';
 import LogManager from './logManager';
+import path from 'path';
 
 export default class AppManager extends EventEmitter {
 
@@ -129,6 +130,19 @@ export default class AppManager extends EventEmitter {
 
   newApp = () => {
     this.emit(AppEvents.NEW_APP);
+  }
+
+  addApp = (appRequest) => {
+    console.log(appRequest);
+    let app = {
+      name: appRequest.project,
+      path: path.join(appRequest.path, appRequest.project),
+      adminPort: appRequest.adminPort,
+      port: appRequest.port,
+      status: AppStates.STOPPED
+    }
+    this.apps.push(app);
+    this.emit(AppEvents.APP_CREATED, app);
   }
 
   importApp = () => {

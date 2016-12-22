@@ -61,6 +61,12 @@ export default class newAppDialog extends React.Component {
     this.setState({open: false});
   };
 
+  handleSubmit = () => {
+    let app = this.state;
+    this.props.manager.addApp(app);
+    this.setState({open: false});
+  };
+
   onProjectChange = (event) => {
     this.setState({
       project: event.target.value,
@@ -133,7 +139,7 @@ export default class newAppDialog extends React.Component {
         label="Submit"
         primary={true}
         keyboardFocused={true}
-        onTouchTap={this.handleClose}
+        onTouchTap={this.handleSubmit}
       />,
     ];
 
