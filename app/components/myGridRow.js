@@ -19,7 +19,9 @@ export default class myGridRow extends React.Component {
     }
     
     this.props.manager.on(AppEvents.STATUS_CHANGED, (app) => {
-      this.setState(this.state);
+      if (this.state.app.name === app.name) {
+        this.setState(this.state);
+      }
     });
     
   }

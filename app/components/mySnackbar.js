@@ -11,7 +11,9 @@ export default class mySnackbar extends React.Component {
       RESTART: 'restart',
       VIEW_LOG: 'view log',
       OPEN: 'open',
-      BROWSE: 'browse'
+      BROWSE: 'browse',
+      NONE: '',
+      DEPLOY: 'deploy'
     }
   
     this.state = {
@@ -41,11 +43,25 @@ export default class mySnackbar extends React.Component {
         action: this.snacktions.BROWSE,
         app: app
       });
-    }).on(AppEvents.STARTED, (app) => {
+    }).on(AppEvents.PROJECT_CREATING, (app) => {
       this.setState({ 
-        message: `${app.name} started.`,
+        message: `Creating project ${app.name} ...`,
         open: true,
-        action: this.snacktions.OPEN,
+        action: this.snacktions.NONE,
+        app: app
+      });
+    }).on(AppEvents.PROJECT_CREATE_FAILED, (app) => {
+      this.setState({ 
+        message: `Project create failed.`,
+        open: true,
+        action: this.snacktions.VIEW_LOG,
+        app: app
+      });
+    }).on(AppEvents.PROJECT_CREATED, (app) => {
+      this.setState({ 
+        message: `Project create complete.`,
+        open: true,
+        action: this.snacktions.DEPLOY,
         app: app
       });
     });
@@ -74,6 +90,9 @@ export default class mySnackbar extends React.Component {
         break;
       case this.snacktions.VIEW_LOG:
         appManager.browseApp(this.state.app);
+        break;
+      case this.snacktions.DEPLOY:
+        appManager.deployApp(this.state.app);
         break;
     }
   };

@@ -49,7 +49,10 @@ export default class AppManager extends EventEmitter {
     
     // attempt to load from IndexedDB
     return db.getItem('apps').then((apps) => {
-      return apps;
+      return apps.map((app) => {
+        app.status = AppStates.STOPPED;
+        return app;
+      });
     }).catch((err) => {
       console.log(err);
       return [];
@@ -175,13 +178,17 @@ export default class AppManager extends EventEmitter {
                   this.emit(AppEvents.PROJECT_CREATE_FAILED, '');
                 }
               });
-            this.logManager.attachLogger(app, p2);
+            this.logManager.attachLogger(app, p2).then(() => {
+              this.emit(AppEvents.EMIT_LOGS, app);
+            });
           } else {
             console.log('error creating project ' + code);
             this.emit(AppEvents.PROJECT_CREATE_FAILED, '');
           }
         });
-      this.logManager.attachLogger(app, p1);
+      this.logManager.attachLogger(app, p1).then(() => {
+        this.emit(AppEvents.EMIT_LOGS, app);
+      });
     }
   }
 
