@@ -34,4 +34,53 @@ export default class gcloudWrap {
 
     return command;
   }
+
+  createProject = (appRequest) => {
+    let command = spawn('gcloud', [
+      'alpha', 'projects', 'create', appRequest.project
+      ], { 
+        cwd: app.path
+      }).on('close', (code) => {
+        console.log(`project create exited with code ${code}`);
+      }).on('error', (err) => {
+        console.log(`project create exited with err ${err}`);
+      }).on('exit', (code, signal) => {
+        console.log(`project create exited with code ${code} and signal ${signal}`);
+      });
+      
+    command.stdout.on('data', (data) => {
+      console.log(`stdout: ${data}`);
+    });
+    
+    command.stderr.on('data', (data) => {
+      console.log(`stderr: ${data}`);
+    });
+
+    return command;
+  }
+
+createApp = (appRequest) => {
+    let command = spawn('gcloud', [
+      'app', 'create', '--region', 'us-central', '--project', appRequest.project
+      ], { 
+        cwd: app.path
+      }).on('close', (code) => {
+        console.log(`app create exited with code ${code}`);
+      }).on('error', (err) => {
+        console.log(`app create exited with err ${err}`);
+      }).on('exit', (code, signal) => {
+        console.log(`app create exited with code ${code} and signal ${signal}`);
+      });
+      
+    command.stdout.on('data', (data) => {
+      console.log(`stdout: ${data}`);
+    });
+    
+    command.stderr.on('data', (data) => {
+      console.log(`stderr: ${data}`);
+    });
+
+    return command;
+  }
+
 }

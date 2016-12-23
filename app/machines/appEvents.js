@@ -10,3 +10,6 @@ export const EMIT_LOGS = "EMIT_LOGS";
 export const NEW_APP = "NEW_APP";
 export const IMPORT_APP = "IMPORT_APP";
 export const APP_CREATED = "APP_CREATED";
+export const PROJECT_CREATING = "PROJECT_CREATING";
+export const PROJECT_CREATED = "PROJECT_CREATED";
+export const PROJECT_CREATE_FAILED = "PROJECT_CREATE_FAILED";

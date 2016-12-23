@@ -158,6 +158,31 @@ export default class AppManager extends EventEmitter {
     fse.copy(srcDir, app.path, (err) => {
       this.emit(AppEvents.APP_CREATED, app);
     });
+
+    // create a new cloud project if they wanted to
+    if (appRequest.autoCreate) {
+      this.emit(AppEvents.PROJECT_CREATING, app);
+      let p1 = this.gcloudWrap.createProject(appRequest)
+        .on('exit', (code, signal) => {
+          if (code == 0) {
+            let p2 = this.gcloudWrap.createApp(appRequest)
+              .on('exit', (code, signal) => {
+                if (code == 0) {
+                  console.log('project/app create done!');
+                  this.emit(AppEvents.PROJECT_CREATED, app);
+                } else {
+                  console.log('error creating app ' + code);
+                  this.emit(AppEvents.PROJECT_CREATE_FAILED, '');
+                }
+              });
+            this.logManager.attachLogger(app, p2);
+          } else {
+            console.log('error creating project ' + code);
+            this.emit(AppEvents.PROJECT_CREATE_FAILED, '');
+          }
+        });
+      this.logManager.attachLogger(app, p1);
+    }
   }
 
   importApp = () => {

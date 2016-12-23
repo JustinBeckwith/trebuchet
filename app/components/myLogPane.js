@@ -61,7 +61,6 @@ export default class MyLogPane extends React.Component {
       manager.getApps().then((apps) => {
         this.setState({
           apps: apps,
-          value: app.name,
         });
       });
     });
