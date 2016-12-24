@@ -17,12 +17,33 @@ export default class MyToolbar extends React.Component {
       visible: false,
     }
 
-    this.props.manager.getApps((apps) => {
+    let manager = this.props.manager;
+    console.log("Getting those apps....");
+    manager.getApps().then(apps => {
+      console.log("# OF APPS: " + apps.length);
       this.setState({
         visible: (apps.length > 0),
-      })
+      });
+    }).catch(err => {
+      console.log(err);
+    });
+
+    // handle app remove events
+    manager.on(AppEvents.REMOVED, (app) => {
+      this.setState({
+        visible: manager.apps.length > 0,
+      });
+    });
+
+    // handle app add events
+    manager.on(AppEvents.APP_CREATED, (app) => {
+      this.setState({
+        visible: manager.apps.length > 0,
+      });
     });
   }
+
+
 
   handleChange = (event, value) => {
     switch(value) {
@@ -42,6 +63,7 @@ export default class MyToolbar extends React.Component {
   }
 
   render() {
+    console.log("VISIBLE: " + this.state.visible);
     return (
       <Toolbar style={{display: this.state.visible ? '' : 'none'}}>
         <ToolbarGroup firstChild={true}>

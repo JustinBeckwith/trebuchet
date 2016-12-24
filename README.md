@@ -2,7 +2,6 @@
 App Engine Trebuchet is a replacement for the App Engine Launcher.  It's super ultra expiremental, and under active development.  This is a not an official Google project.
 
 ## TODO
-- auto-install alpha commands on startup 
 - auto-install dev_appserver if needed
 - make toolbar show up after first app is added
 - finish making 0-day experience better

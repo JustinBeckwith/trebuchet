@@ -79,12 +79,12 @@ export default class AppManager extends EventEmitter {
 
   getApps = () => {
     // return from local memory after initial load
-    if (this.apps) {
-      return new Promise((resolve, reject) =>  resolve(this.apps));
+    if (this._getAppsPromise) {
+      return this._getAppsPromise;
     } 
     
     // attempt to load from IndexedDB
-    return db.getItem('apps').then((apps) => {
+    this._getAppsPromise = db.getItem('apps').then((apps) => {
       return apps.map((app) => {
         app.status = AppStates.STOPPED;
         return app;
@@ -93,6 +93,8 @@ export default class AppManager extends EventEmitter {
       console.log(err);
       return [];
     });
+
+    return this._getAppsPromise;
   }
 
   removeApp = (app) => {
