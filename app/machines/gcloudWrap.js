@@ -35,9 +35,9 @@ export default class gcloudWrap {
     return command;
   }
 
-  createProject = (appRequest) => {
+  createProject = (app) => {
     let command = spawn('gcloud', [
-      'alpha', 'projects', 'create', appRequest.project
+      'alpha', 'projects', 'create', app.name
       ], { 
         cwd: app.path
       }).on('close', (code) => {
@@ -59,9 +59,9 @@ export default class gcloudWrap {
     return command;
   }
 
-createApp = (appRequest) => {
+createApp = (app) => {
     let command = spawn('gcloud', [
-      'app', 'create', '--region', 'us-central', '--project', appRequest.project
+      'app', 'create', '--region', 'us-central', '--project', app.name
       ], { 
         cwd: app.path
       }).on('close', (code) => {

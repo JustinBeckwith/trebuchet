@@ -164,35 +164,58 @@ export default class AppManager extends EventEmitter {
 
     // create a new cloud project if they wanted to
     if (appRequest.autoCreate) {
-      this.emit(AppEvents.PROJECT_CREATING, app);
-      let p1 = this.gcloudWrap.createProject(appRequest)
-        .on('exit', (code, signal) => {
-          if (code == 0) {
-            let p2 = this.gcloudWrap.createApp(appRequest)
-              .on('exit', (code, signal) => {
-                if (code == 0) {
-                  console.log('project/app create done!');
-                  this.emit(AppEvents.PROJECT_CREATED, app);
-                } else {
-                  console.log('error creating app ' + code);
-                  this.emit(AppEvents.PROJECT_CREATE_FAILED, '');
-                }
-              });
-            this.logManager.attachLogger(app, p2).then(() => {
-              this.emit(AppEvents.EMIT_LOGS, app);
-            });
-          } else {
-            console.log('error creating project ' + code);
-            this.emit(AppEvents.PROJECT_CREATE_FAILED, '');
-          }
-        });
-      this.logManager.attachLogger(app, p1).then(() => {
-        this.emit(AppEvents.EMIT_LOGS, app);
-      });
+      this._createCloudProject(app);
     }
   }
 
-  importApp = () => {
-    this.emit(AppEvents.IMPORT_APP);
+  importApp = (appRequest) => {
+    console.log(appRequest);
+    let app = {
+      name: appRequest.project,
+      path: appRequest.path,
+      adminPort: appRequest.adminPort,
+      port: appRequest.port,
+      status: AppStates.STOPPED
+    }
+    this.apps.push(app);
+    db.setItem('apps', this.apps);
+    this.emit(AppEvents.APP_CREATED, app);
+
+    // create a new cloud project if they wanted to
+    if (appRequest.cloudSettings == "newCloudProject") {
+      this._createCloudProject(app);
+    }
+  }
+
+  showImportApp = () => {
+    this.emit(AppEvents.SHOW_IMPORT_APP);
+  }
+
+  _createCloudProject = (app) => {
+    this.emit(AppEvents.PROJECT_CREATING, app);
+    let p1 = this.gcloudWrap.createProject(app)
+      .on('exit', (code, signal) => {
+        if (code == 0) {
+          let p2 = this.gcloudWrap.createApp(app)
+            .on('exit', (code, signal) => {
+              if (code == 0) {
+                console.log('project/app create done!');
+                this.emit(AppEvents.PROJECT_CREATED, app);
+              } else {
+                console.log('error creating app ' + code);
+                this.emit(AppEvents.PROJECT_CREATE_FAILED, '');
+              }
+            });
+          this.logManager.attachLogger(app, p2).then(() => {
+            this.emit(AppEvents.EMIT_LOGS, app);
+          });
+        } else {
+          console.log('error creating project ' + code);
+          this.emit(AppEvents.PROJECT_CREATE_FAILED, '');
+        }
+      });
+    this.logManager.attachLogger(app, p1).then(() => {
+      this.emit(AppEvents.EMIT_LOGS, app);
+    });
   }
 }

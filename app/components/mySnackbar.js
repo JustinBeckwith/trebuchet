@@ -89,7 +89,7 @@ export default class mySnackbar extends React.Component {
         appManager.startApp(this.state.app);
         break;
       case this.snacktions.VIEW_LOG:
-        appManager.browseApp(this.state.app);
+        appManager.viewLogs(this.state.app);
         break;
       case this.snacktions.DEPLOY:
         appManager.deployApp(this.state.app);

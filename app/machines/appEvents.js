@@ -9,6 +9,7 @@ export const VIEW_LOGS = "VIEW_LOGS";
 export const EMIT_LOGS = "EMIT_LOGS";
 export const NEW_APP = "NEW_APP";
 export const IMPORT_APP = "IMPORT_APP";
+export const SHOW_IMPORT_APP = "SHOW_IMPORT_APP";
 export const APP_CREATED = "APP_CREATED";
 export const PROJECT_CREATING = "PROJECT_CREATING";
 export const PROJECT_CREATED = "PROJECT_CREATED";

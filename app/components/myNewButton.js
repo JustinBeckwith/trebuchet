@@ -37,7 +37,7 @@ export default class MyNewButton extends React.Component {
         this.props.manager.newApp();
         break;
       case "import":
-        this.props.manager.importApp();
+        this.props.manager.showImportApp();
         break;
     }
     this.setState({

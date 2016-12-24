@@ -20,7 +20,7 @@ export default class importAppDialog extends React.Component {
     }
     
     let manager = this.props.manager;
-    manager.on(AppEvents.IMPORT_APP, () => {
+    manager.on(AppEvents.SHOW_IMPORT_APP, () => {
       this.getNextPort().then((port) => {
         let name = generate({ number: true }).dashed;
         this.setState({
@@ -30,7 +30,6 @@ export default class importAppDialog extends React.Component {
           port: port,
           adminPort: port+1,
           path: "",
-          projectDisabled: false,
           formInvalid: true,
           cloudSettings: 'newCloudProject',
           pathErrorText: '',
@@ -108,18 +107,8 @@ export default class importAppDialog extends React.Component {
   }
 
   onCloudSettingsChange = (event, value) => {
-    let disabled = (value == "noCloudProject");
-    let project = this.state.project;
-    if (disabled) {
-      project = "";
-    } else if (project == "") {
-      project = this.state.generatedName;
-    }
-
     this.setState({
       cloudSettings: value,
-      projectDisabled: disabled,
-      project: project,
     });
   }
 
@@ -225,8 +214,7 @@ export default class importAppDialog extends React.Component {
             hintText="Project" 
             floatingLabelText="Project name"
             value={this.state.project}
-            onChange={this.onProjectChange}
-            disabled={this.state.projectDisabled} />
+            onChange={this.onProjectChange} />
         </div>
           
         
