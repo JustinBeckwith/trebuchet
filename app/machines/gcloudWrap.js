@@ -74,9 +74,27 @@ export default class gcloudWrap {
       ['alpha', 'projects', 'create', app.name]);
   }
 
+  installAlphaTools = (app) => {
+    return this.runAppCommand(app,
+      ['components', 'install', 'alpha', '-q']);
+  }
+
   createApp = (app) => {
     return this.runAppCommand(app, 
       ['app', 'create', '--region', 'us-central', '--project', app.name]);
+  }
+
+  getComponents = () => {
+    return new Promise((resolve, reject) => {
+      exec('gcloud components list --format json', (err, stdout, stderr) => {
+        if (err) {
+          reject(err);
+        } else {
+          let output = JSON.parse(stdout);
+          resolve(output);
+        }
+      }); 
+    });
   }
 
 }

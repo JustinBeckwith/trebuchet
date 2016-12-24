@@ -22,6 +22,7 @@ export default class myCloudSdkDialog extends React.Component {
           messsageType: "install",
         });
       } else {
+        manager.checkDeps();
         manager.isUserLoggedIn().then((loggedIn) => {
           if (!loggedIn) {
             this.setState({

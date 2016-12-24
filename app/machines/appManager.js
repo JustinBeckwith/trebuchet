@@ -30,8 +30,36 @@ export default class AppManager extends EventEmitter {
     });
   }
 
+  /**
+   *  Check which gcloud deps are installed, and cache the results
+   *  so we can look it up later. Store the results in local storag
+   *  just in case we need to check before the inital command completes.
+   */
+  checkDeps = () => {
+    return this.gcloudWrap.getComponents().then(results => {
+      let installedComponents = results.map((component) => {
+        return {
+          id: component.id,
+          installed: (component.state.name === "Installed")
+        }
+      });
+      console.log(installedComponents);
+      return db.setItem('deps', installedComponents)
+    }).catch(err => {
+      console.log("Error checking components... ")
+      console.log(err);
+    });
+  }
+
   isCloudSdkInstalled = () => {
     return this.gcloudWrap.checkInstalled();
+  }
+
+  areAlphaToolsInstalled = () => {
+    return db.getItem('deps').then((deps) => {
+      let alphaTools = _.find(deps, { id: 'alpha'});
+      return alphaTools && alphaTools.installed;
+    });
   }
 
   isUserLoggedIn = () => {
@@ -201,31 +229,61 @@ export default class AppManager extends EventEmitter {
     this.emit(AppEvents.SHOW_IMPORT_APP);
   }
 
-  _createCloudProject = (app) => {
-    this.emit(AppEvents.PROJECT_CREATING, app);
-    let p1 = this.gcloudWrap.createProject(app)
-      .on('exit', (code, signal) => {
-        if (code == 0) {
-          let p2 = this.gcloudWrap.createApp(app)
+  /**
+   * Install the alpha tools if not already installed. Returns
+   * a promise that resolves when the installation is finished.  
+   */
+  _installAlphaToolsIfNeeded = (app) => {
+    return new Promise((resolve, reject) => {
+      this.areAlphaToolsInstalled().then(installed => {
+        if (!installed) {
+          let command = this.gcloudWrap.installAlphaTools(app)
             .on('exit', (code, signal) => {
               if (code == 0) {
-                console.log('project/app create done!');
-                this.emit(AppEvents.PROJECT_CREATED, app);
+                console.log('alpha tools installed!');
+                resolve();
               } else {
-                console.log('error creating app ' + code);
-                this.emit(AppEvents.PROJECT_CREATE_FAILED, '');
+                console.log('something went wrong installing the alpha tools');
+                reject(code);
               }
             });
-          this.logManager.attachLogger(app, p2).then(() => {
+          this.logManager.attachLogger(app, command).then(() => {
             this.emit(AppEvents.EMIT_LOGS, app);
           });
         } else {
-          console.log('error creating project ' + code);
-          this.emit(AppEvents.PROJECT_CREATE_FAILED, '');
+          resolve();
         }
       });
-    this.logManager.attachLogger(app, p1).then(() => {
-      this.emit(AppEvents.EMIT_LOGS, app);
+    });
+  }
+
+  _createCloudProject = (app) => {
+    this.emit(AppEvents.PROJECT_CREATING, app);
+    this._installAlphaToolsIfNeeded(app).then(() => {
+      let p1 = this.gcloudWrap.createProject(app)
+        .on('exit', (code, signal) => {
+          if (code == 0) {
+            let p2 = this.gcloudWrap.createApp(app)
+              .on('exit', (code, signal) => {
+                if (code == 0) {
+                  console.log('project/app create done!');
+                  this.emit(AppEvents.PROJECT_CREATED, app);
+                } else {
+                  console.log('error creating app ' + code);
+                  this.emit(AppEvents.PROJECT_CREATE_FAILED, '');
+                }
+              });
+            this.logManager.attachLogger(app, p2).then(() => {
+              this.emit(AppEvents.EMIT_LOGS, app);
+            });
+          } else {
+            console.log('error creating project ' + code);
+            this.emit(AppEvents.PROJECT_CREATE_FAILED, '');
+          }
+        });
+      this.logManager.attachLogger(app, p1).then(() => {
+        this.emit(AppEvents.EMIT_LOGS, app);
+      });
     });
   }
 }
