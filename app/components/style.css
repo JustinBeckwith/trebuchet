@@ -68,4 +68,24 @@ body, html {
   width: 100%;
   position: relative;
   flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.dragBox {
+  flex-grow: 1;
+  justify-content: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #AAA;
+  font-size:22px;
+  background-color: #444;
+}
+
+.logo {
+  display: block;
+  width: 400px;
+  opacity: 0.24;
+  margin: auto;
 }

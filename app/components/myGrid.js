@@ -8,7 +8,7 @@ export default class MyGrid extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      apps: []
+      apps: [],
     }
 
     let manager = this.props.manager;
@@ -39,22 +39,33 @@ export default class MyGrid extends React.Component {
         key={app.path} 
         manager={this.props.manager} />
     );
+    let displayGrid = listItems.length > 0 ? '' : 'none';
+    let displayEmpty = listItems.length > 0 ? 'none' : '';
+    
     return (
-      <Table multiSelectable={true}>
-        <TableHeader>
-          <TableRow>
-            <TableHeaderColumn className="iconCol"></TableHeaderColumn>
-            <TableHeaderColumn className="medCol">Name</TableHeaderColumn>
-            <TableHeaderColumn>Path</TableHeaderColumn>
-            <TableHeaderColumn className="smallCol">Admin Port</TableHeaderColumn>
-            <TableHeaderColumn className="smallCol">Port</TableHeaderColumn>
-            <TableHeaderColumn className="iconCol"></TableHeaderColumn>
-          </TableRow>
-        </TableHeader>
-        <TableBody showRowHover={true}>
-          {listItems}
-        </TableBody>
-      </Table>
+      <div style={{flexGrow: 1, display: 'flex'}}>
+        <Table multiSelectable={true} style={{display: displayGrid}}>
+          <TableHeader>
+            <TableRow>
+              <TableHeaderColumn className="iconCol"></TableHeaderColumn>
+              <TableHeaderColumn className="medCol">Name</TableHeaderColumn>
+              <TableHeaderColumn>Path</TableHeaderColumn>
+              <TableHeaderColumn className="smallCol">Admin Port</TableHeaderColumn>
+              <TableHeaderColumn className="smallCol">Port</TableHeaderColumn>
+              <TableHeaderColumn className="iconCol"></TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody showRowHover={true}> 
+            {listItems}
+          </TableBody>
+        </Table>
+        <div style={{display: displayEmpty}} className="dragBox">
+          <div style={{alignSelf: 'center', marginTop: '-100px'}}>  
+            <img src="./images/svg/engine.svg" className="logo" />
+            Drag a folder into the app, or click the (+) to get started.
+          </div>
+        </div>
+      </div>
     );
   }
 }

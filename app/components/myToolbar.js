@@ -13,6 +13,15 @@ export default class MyToolbar extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      visible: false,
+    }
+
+    this.props.manager.getApps((apps) => {
+      this.setState({
+        visible: (apps.length > 0),
+      })
+    });
   }
 
   handleChange = (event, value) => {
@@ -34,7 +43,7 @@ export default class MyToolbar extends React.Component {
 
   render() {
     return (
-      <Toolbar>
+      <Toolbar style={{display: this.state.visible ? '' : 'none'}}>
         <ToolbarGroup firstChild={true}>
           <div></div>
         </ToolbarGroup>
