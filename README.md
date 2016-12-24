@@ -3,7 +3,6 @@ App Engine Trebuchet is a replacement for the App Engine Launcher.  It's super u
 
 ## TODO
 - auto download gcloud if not available
-- figure out gcloud auth login
 - Add flex support
 - Log split/resize control
 - Tests, tests, tests

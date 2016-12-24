@@ -11,13 +11,36 @@ export default class myCloudSdkDialog extends React.Component {
     
     this.state = {
       open: false,
+      messageType: "install",
     };
 
-    this.props.manager.isCloudSdkInstalled().then((installed) => {
+    let manager = this.props.manager;
+    manager.isCloudSdkInstalled().then((installed) => {
       if (!installed) {
-        this.setState({open: true});
+        this.setState({
+          open: true,
+          messsageType: "install",
+        });
+      } else {
+        manager.isUserLoggedIn().then((loggedIn) => {
+          if (!loggedIn) {
+            this.setState({
+              open: true,
+              messageType: "login",
+            });
+            manager.attemptUserLogin().then((result) => {
+              if (result) {
+                this.setState({
+                  open: false,
+                });
+              }
+            });
+          }
+        });
       }
     });
+
+    
   }
   
   handleClose = () => {
@@ -39,15 +62,31 @@ export default class myCloudSdkDialog extends React.Component {
       />
     ];
 
-    return (
-      <Dialog
-        title="Install the Google Cloud SDK"
-        actions={actions}
-        modal={true}
-        open={this.state.open}
-        onRequestClose={this.handleClose}>
-        The App Engine Trebuchet requires the Google Cloud SDK.  Visit <a href="#" onClick={this.linkClick}>https://cloud.google.com/sdk/</a> to get started, and then restart the application.
-      </Dialog>
-    );
+    let dialog = <div></div>;
+    switch(this.state.messageType) {
+      case "install":
+        dialog = (
+          <Dialog title="Install the Google Cloud SDK"
+            actions={actions}
+            modal={true}
+            open={this.state.open}
+            onRequestClose={this.handleClose}>
+            The App Engine Trebuchet requires the Google Cloud SDK.  Visit <a href='#' onClick={this.linkClick}>https://cloud.google.com/sdk/</a> to get started, and then restart the application.
+          </Dialog>
+        );
+        break;
+      case "login":
+        dialog = (
+          <Dialog title="Log into Google Cloud"
+            actions={actions}
+            modal={true}
+            open={this.state.open}
+            onRequestClose={this.handleClose}>
+            To continue, please log into your Google account.  
+          </Dialog>
+        );
+        break;
+    }
+    return dialog;
   }
 }

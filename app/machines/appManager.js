@@ -34,6 +34,14 @@ export default class AppManager extends EventEmitter {
     return this.gcloudWrap.checkInstalled();
   }
 
+  isUserLoggedIn = () => {
+    return this.gcloudWrap.checkUserLoggedIn();
+  }
+
+  attemptUserLogin = () => {
+    return this.gcloudWrap.attemptLogin();
+  }
+
   getApp = (name) => {
     return this.getApps().then((apps) => {
       let app = _.find(apps, { name: name });
