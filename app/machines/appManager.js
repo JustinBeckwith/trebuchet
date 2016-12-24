@@ -93,10 +93,12 @@ export default class AppManager extends EventEmitter {
     let process = this.devAppWrap.startAppServer(app);
     return this.logManager.attachLogger(app, process).then((logger) => {
       this.emit(AppEvents.EMIT_LOGS, app);
-      app.status = AppStates.STARTED;
-      this.emit(AppEvents.STARTED, app);
-      this.emit(AppEvents.STATUS_CHANGED, app);
-      return app;
+      process.on('data', (data) => {
+        app.status = AppStates.STARTED;
+        this.emit(AppEvents.STARTED, app);
+        this.emit(AppEvents.STATUS_CHANGED, app);
+        return app;
+      });
     });
   }
   
