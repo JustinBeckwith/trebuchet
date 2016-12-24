@@ -15,12 +15,18 @@ export default class myGridRow extends React.Component {
     this.state = {
       isHovered: false,
       isMenuOpen: false,
-      app: this.props.app
+      app: this.props.app,
+      action: "Start",
     }
     
     this.props.manager.on(AppEvents.STATUS_CHANGED, (app) => {
       if (this.state.app.name === app.name) {
-        this.setState(this.state);
+        let isStopped = (app.status == AppStates.STOPPED);
+        let action = isStopped ? "Start" : "Stop";
+        this.setState({
+          action: action,
+          app: app,
+        });
       }
     });
     
@@ -104,8 +110,9 @@ export default class myGridRow extends React.Component {
             <MenuItem primaryText="Edit" value="Edit" />
             <MenuItem primaryText="Remove" value="Remove" />
             <Divider />
-            <MenuItem primaryText="Start" value="Start" disabled={app.status == AppStates.STARTED || app.status == AppStates.STARTING} />
-            <MenuItem primaryText="Stop" value="Stop" disabled={app.status == AppStates.STOPPED || app.status == AppStates.STOPPING} />
+            <MenuItem primaryText={this.state.action}
+              value={this.state.action}
+              disabled={app.status == AppStates.STARTING || app.status == AppStates.STOPPING} />
             <MenuItem primaryText="Browse" value="Browse" />
             <MenuItem primaryText="Logs" value="Logs" />
             <MenuItem primaryText="SDK Console" value="SDK Console" />
