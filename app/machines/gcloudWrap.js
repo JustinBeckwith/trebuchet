@@ -5,6 +5,9 @@ export default class gcloudWrap {
   checkInstalled = () => {
     return new Promise((resolve, reject) => {
       let command = spawn('gcloud', ['-v'])
+        .on('error', (err) => {
+          resolve(false);
+        })
         .on('exit', (code, signal) => {
           resolve(code == 0); 
         });

@@ -4,7 +4,6 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {remote, shell} from 'electron';
 
-
 export default class myCloudSdkDialog extends React.Component {
   
   constructor(props) {
