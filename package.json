@@ -4,8 +4,9 @@
   "description": "A happy litte app that makes manaing App Engine a tad easier.",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "build": "webpack"
+    "start": "webpack",
+    "dev": "webpack --watch",
+    "package": "electron-packager . 'App Engine Trebuchet' --out bin --icon app/images/mac/icon.icns --overwrite"
   },
   "repository": "https://github.com/JustinBeckwith/trebuchet",
   "keywords": [
@@ -29,6 +30,7 @@
     "electron": "^1.4.1",
     "electron-connect": "^0.6.1",
     "electron-connect-webpack-plugin": "^0.1.1",
+    "electron-packager": "^8.4.0",
     "webpack": "^1.14.0"
   },
   "dependencies": {
