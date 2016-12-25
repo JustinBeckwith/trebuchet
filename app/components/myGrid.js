@@ -40,7 +40,14 @@ export default class MyGrid extends React.Component {
         manager={this.props.manager} />
     );
     let displayGrid = listItems.length > 0 ? '' : 'none';
-    let displayEmpty = listItems.length > 0 ? 'none' : '';
+    
+    let hideStyle = {
+      display: 'none',
+    }
+    let showStyle = {
+      display: '',
+    }
+    let displayEmpty = listItems.length > 0 ? hideStyle : showStyle;
     
     return (
       <div style={{flexGrow: 1, display: 'flex'}}>
@@ -59,7 +66,7 @@ export default class MyGrid extends React.Component {
             {listItems}
           </TableBody>
         </Table>
-        <div style={{display: displayEmpty}} className="dragBox">
+        <div style={displayEmpty} className="dragBox">
           <div style={{alignSelf: 'center', marginTop: '-100px'}}>  
             <img src="./images/svg/engine.svg" className="logo" />
             Drag a folder into the app, or click the (+) to get started.

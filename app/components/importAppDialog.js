@@ -8,7 +8,9 @@ import * as AppEvents from './../machines/appEvents';
 import {remote} from 'electron';
 import generate from 'project-name-generator';
 import os from 'os';
-import fs from 'fs'
+import fs from 'fs';
+import path from 'path';
+import YAML from 'js-yaml';
 
 export default class importAppDialog extends React.Component {
 
@@ -34,6 +36,8 @@ export default class importAppDialog extends React.Component {
           cloudSettings: 'newCloudProject',
           pathErrorText: '',
           formInvalid: true,
+          runtime: 'python',
+          env: 'standard',
         });
       });
     });    
@@ -64,6 +68,7 @@ export default class importAppDialog extends React.Component {
       path: event.target.value,
     }, () => {
       this.checkFormValid();
+      this.getAppInfo();
     });
 
   }
@@ -90,6 +95,7 @@ export default class importAppDialog extends React.Component {
         path: result[0],
       }, () => {
         this.checkFormValid();
+        this.getAppInfo();
       });
     }
   }
@@ -121,6 +127,38 @@ export default class importAppDialog extends React.Component {
         this.setValidState(pathValid);
       });
     }
+  }
+
+  getAppInfo = () => {
+    let yamlPath = path.join(this.state.path, "app.yaml");
+    fs.readFile(yamlPath, 'utf8', (err, data) => {
+      if (err) {
+        // if there's an err... assume this is flex and the app.yaml will be auto-generated?
+        this.setState({ env: "flex"});
+      } else {
+        let config = YAML.safeLoad(data);
+        console.log(config);
+        this.setState({
+          env: config.env ? config.env : "standard",
+        });
+        
+        let runtime = config.runtime;
+        if (config.runtime) {
+          if (config.runtime.indexOf('python') == 0) {
+            runtime = "python";
+          } else if (config.runtime.indexOf('php') == 0) {
+            runtime = "php";
+          } else if (config.runtime.indexOf('java') == 0) {
+            runtime = "java";
+          }
+        }
+        
+        this.setState({
+          runtime: runtime,
+        });
+        
+      }
+    });
   }
 
   setValidState = (isValid) => {

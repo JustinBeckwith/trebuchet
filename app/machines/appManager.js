@@ -9,6 +9,7 @@ import LogManager from './logManager';
 import path from 'path';
 import db from 'localforage';
 import fse from 'fs-extra';
+import fs from 'fs';
 
 export default class AppManager extends EventEmitter {
 
@@ -55,10 +56,10 @@ export default class AppManager extends EventEmitter {
     return this.gcloudWrap.checkInstalled();
   }
 
-  areAlphaToolsInstalled = () => {
+  isComponentInstalled = (component) => {
     return db.getItem('deps').then((deps) => {
-      let alphaTools = _.find(deps, { id: 'alpha'});
-      return alphaTools && alphaTools.installed;
+      let c = _.find(deps, { id: component});
+      return c && c.installed;
     });
   }
 
@@ -128,6 +129,8 @@ export default class AppManager extends EventEmitter {
   startApp = (app) => {
     app.status = AppStates.STARTING;
     this.emit(AppEvents.STATUS_CHANGED, app);
+    // check to make sure the SDK component we need is installed
+    // ...
     let process = this.devAppWrap.startAppServer(app);
     return this.logManager.attachLogger(app, process).then((logger) => {
       this.emit(AppEvents.EMIT_LOGS, app);
@@ -183,10 +186,15 @@ export default class AppManager extends EventEmitter {
     this.emit(AppEvents.NEW_APP);
   }
 
+  /**
+   * Add a new application based on a template. 
+   */
   addApp = (appRequest) => {
     console.log(appRequest);
     let app = {
       name: appRequest.project,
+      runtime: appRequest.runtime,
+      env: appRequest.env,
       path: path.join(appRequest.path, appRequest.project),
       adminPort: appRequest.adminPort,
       port: appRequest.port,
@@ -208,6 +216,9 @@ export default class AppManager extends EventEmitter {
     }
   }
 
+  /**
+   * Import an application from a directory on disk.  
+   */
   importApp = (appRequest) => {
     console.log(appRequest);
     let app = {
@@ -215,7 +226,9 @@ export default class AppManager extends EventEmitter {
       path: appRequest.path,
       adminPort: appRequest.adminPort,
       port: appRequest.port,
-      status: AppStates.STOPPED
+      status: AppStates.STOPPED,
+      runtime: appRequest.runtime,
+      env: appRequest.env,
     }
     this.apps.push(app);
     db.setItem('apps', this.apps);
@@ -232,20 +245,20 @@ export default class AppManager extends EventEmitter {
   }
 
   /**
-   * Install the alpha tools if not already installed. Returns
+   * Install a component only if not already installed. Returns
    * a promise that resolves when the installation is finished.  
    */
-  _installAlphaToolsIfNeeded = (app) => {
+  _installComponentIfNeeded = (component, app) => {
     return new Promise((resolve, reject) => {
-      this.areAlphaToolsInstalled().then(installed => {
+      this.isComponentInstalled(component).then(installed => {
         if (!installed) {
-          let command = this.gcloudWrap.installAlphaTools(app)
+          let command = this.gcloudWrap.installComponent(component)
             .on('exit', (code, signal) => {
               if (code == 0) {
-                console.log('alpha tools installed!');
+                console.log('Component ' + component + " installed");
                 resolve();
               } else {
-                console.log('something went wrong installing the alpha tools');
+                console.log('something went wrong installing a component');
                 reject(code);
               }
             });
@@ -261,7 +274,7 @@ export default class AppManager extends EventEmitter {
 
   _createCloudProject = (app) => {
     this.emit(AppEvents.PROJECT_CREATING, app);
-    this._installAlphaToolsIfNeeded(app).then(() => {
+    this._installComponentIfNeeded('alpha', app).then(() => {
       let p1 = this.gcloudWrap.createProject(app)
         .on('exit', (code, signal) => {
           if (code == 0) {

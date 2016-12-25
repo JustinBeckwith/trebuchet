@@ -3,10 +3,9 @@ App Engine Trebuchet is a replacement for the App Engine Launcher.  It's super u
 
 ## TODO
 - auto-install dev_appserver if needed
-- make toolbar show up after first app is added
-- finish making 0-day experience better
 - Log split/resize control
 - Add flex support
+- implement drag and drop
 - Tests, tests, tests
 - Logs search
 - Implement error reporting system 

@@ -43,9 +43,13 @@ export default class gcloudWrap {
   }
 
   runAppCommand = (app, params) => {
-    let command = spawn('gcloud', params, { 
+    
+    let options = app ? { 
         cwd: app.path
-      }).on('close', (code) => {
+      } : {};
+
+    let command = spawn('gcloud', params, options)
+      .on('close', (code) => {
         console.log(`child process exited with code ${code}`);
       }).on('error', (err) => {
         console.log(`child process exited with err`);
@@ -74,9 +78,9 @@ export default class gcloudWrap {
       ['alpha', 'projects', 'create', app.name]);
   }
 
-  installAlphaTools = (app) => {
-    return this.runAppCommand(app,
-      ['components', 'install', 'alpha', '-q']);
+  installComponent = (component) => {
+    return this.runAppCommand(null,
+      ['components', 'install', component, '-q']);
   }
 
   createApp = (app) => {

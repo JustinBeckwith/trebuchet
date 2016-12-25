@@ -39,7 +39,8 @@ export default class newAppDialog extends React.Component {
           adminPort: port+1,
           path: localPath,
           runtime: "python",
-          autoCreate: true
+          autoCreate: true,
+          env: 'standard',
         });
       });
     });    
