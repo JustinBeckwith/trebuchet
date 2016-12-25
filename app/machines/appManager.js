@@ -292,6 +292,8 @@ export default class AppManager extends EventEmitter {
             .on('exit', (code, signal) => {
               if (code == 0) {
                 console.log('Component ' + component + " installed");
+                // re-run checkdeps so the new results are cached
+                this.checkDeps();
                 resolve();
               } else {
                 console.log('something went wrong installing a component');

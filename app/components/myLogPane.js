@@ -72,11 +72,10 @@ export default class MyLogPane extends React.Component {
       if (this.state.value != app.name) {
         document.getElementById("logContent").innerText = '';
       }
-      this.bindLogger();
       this.setState({
         visible: true,
         value: app.name,
-      });
+      }, this.bindLogger);
     });
 
     /**
@@ -109,9 +108,10 @@ export default class MyLogPane extends React.Component {
         log.on("line", (data) => {
           let lc = document.getElementById("logContent");
           let isPinned = (lc.scrollTop === (lc.scrollHeight - lc.offsetHeight));
-          let d = document.createElement("div");
-          d.innerText = data;
-          lc.appendChild(d);
+          // let d = document.createElement("div");
+          // d.innerText = data;
+          // lc.appendChild(d);
+          lc.innerText = lc.innerText + "\n" + data;
           if (isPinned) {
             lc.scrollTop = lc.scrollHeight;
           }
@@ -157,7 +157,7 @@ export default class MyLogPane extends React.Component {
           </div>
           <div style={{clear: "both"}}></div>
         </div>
-        <div className="logContent" id="logContent"></div>
+        <pre className="logContent" id="logContent"></pre>
       </div>
     );
   }
