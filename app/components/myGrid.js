@@ -36,7 +36,7 @@ export default class MyGrid extends React.Component {
     let listItems = this.state.apps.map((app) =>
       <MyGridRow 
         app={app} 
-        key={app.path} 
+        key={app.name}
         manager={this.props.manager} />
     );
     let displayGrid = listItems.length > 0 ? '' : 'none';
