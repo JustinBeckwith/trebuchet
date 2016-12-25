@@ -138,8 +138,12 @@ export default class importAppDialog extends React.Component {
       } else {
         let config = YAML.safeLoad(data);
         console.log(config);
+        let env = config.env ? config.env : "standard";
+        if (config.vm == "true" || config.env == "flexible") {
+          env = "flex";
+        }
         this.setState({
-          env: config.env ? config.env : "standard",
+          env: env,
         });
         
         let runtime = config.runtime;

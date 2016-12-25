@@ -126,21 +126,57 @@ export default class AppManager extends EventEmitter {
     this.emit(AppEvents.VIEW_LOGS, app);
   }
 
+  /**
+   * Start a given application using the appropriate emulator.
+   */
   startApp = (app) => {
+
+    // we can't run flex apps quite yet
+    if (app.env == "flex") {
+      this.emit(AppEvents.SHOW_ERROR, { 
+        title: "Flex not supported",
+        message: "Trebuchet doesn't currently support running App Engine Flex applications."
+      });
+      return;
+    }
+    
+    // notify UI the start is starting
     app.status = AppStates.STARTING;
     this.emit(AppEvents.STATUS_CHANGED, app);
-    // check to make sure the SDK component we need is installed
-    // ...
-    let process = this.devAppWrap.startAppServer(app);
-    return this.logManager.attachLogger(app, process).then((logger) => {
-      this.emit(AppEvents.EMIT_LOGS, app);
-      process.on('data', (data) => {
-        app.status = AppStates.STARTED;
-        this.emit(AppEvents.STARTED, app);
-        this.emit(AppEvents.STATUS_CHANGED, app);
-        return app;
+
+    // check to see if this configuration requires a component to be installed
+    let component = "";
+    switch (app.runtime) {
+      case "python":
+        component = "app-engine-python";
+        break;
+      case "go":
+        component = "app-engine-go";
+        break;
+      case "php":
+        component = "app-engine-php-darwin";
+        break;
+      case "java":
+        component = "app-engine-java";
+        break;
+    }
+
+    // install the component if needed, then start the app server
+    this._installComponentIfNeeded(component, app).then(() => {
+      
+      // start the app server;
+      let process = this.devAppWrap.startAppServer(app);
+
+      // attach the logger to the app process
+      return this.logManager.attachLogger(app, process).then((logger) => {
+        process.stderr.on('data', (data) => {
+          app.status = AppStates.STARTED;
+          this.emit(AppEvents.STARTED, app);
+          this.emit(AppEvents.STATUS_CHANGED, app);
+        });
+        this.emit(AppEvents.EMIT_LOGS, app);
       });
-    });
+    })
   }
   
   stopApp = (app) => {

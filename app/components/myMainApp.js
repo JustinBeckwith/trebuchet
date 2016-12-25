@@ -9,6 +9,7 @@ import MyLogPane from './myLogPane';
 import MyNewButton from './myNewButton';
 import NewAppDialog from './newAppDialog';
 import ImportAppDialog from './importAppDialog';
+import ErrDialog from './errDialog';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {fade} from 'material-ui/utils/colorManipulator';
 import {
@@ -56,6 +57,7 @@ export default class MyMainApp extends React.Component {
             <MyNewButton manager={this.props.manager} />
             <NewAppDialog manager={this.props.manager} />
             <ImportAppDialog manager={this.props.manager} />
+            <ErrDialog manager={this.props.manager} />
           </div>
           <MyLogPane manager={this.props.manager} />
         </div>

@@ -70,17 +70,18 @@ export default class MyLogPane extends React.Component {
      */
     manager.on(AppEvents.EMIT_LOGS, (app) => { 
       if (this.state.value != app.name) {
-        this.setState({
-          value: app.name
-        });
         document.getElementById("logContent").innerText = '';
-        this.bindLogger();
       }
+      this.bindLogger();
       this.setState({
-        visible: true
+        visible: true,
+        value: app.name,
       });
     });
 
+    /**
+     * On startup, bind the list of available apps.  
+     */
     manager.getApps().then((apps) => {
       this.setState({ 
         apps: apps,
