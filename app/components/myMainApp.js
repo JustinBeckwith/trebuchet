@@ -42,24 +42,40 @@ const muiTheme = getMuiTheme({
 export default class MyMainApp extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      splash: true,
+    }
+
+    setTimeout(() => {
+      this.setState({
+        splash: false,
+      });
+    }, 2000);
+
   }
 
   render() {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
         <div className="fullContainer">
-          <div className="topContainer">
-            <MyAppBar />
-            <MyToolbar manager={this.props.manager} />
-            <MyGrid manager={this.props.manager} />
-            <MySnackbar manager={this.props.manager} />
-            <MyCloudSdkDialog manager={this.props.manager} />
-            <MyNewButton manager={this.props.manager} />
-            <NewAppDialog manager={this.props.manager} />
-            <ImportAppDialog manager={this.props.manager} />
-            <ErrDialog manager={this.props.manager} />
+          <div className="fullContainer">
+            <div className="topContainer">
+              <MyAppBar />
+              <MyToolbar manager={this.props.manager} />
+              <MyGrid manager={this.props.manager} />
+              <MySnackbar manager={this.props.manager} />
+              <MyCloudSdkDialog manager={this.props.manager} />
+              <MyNewButton manager={this.props.manager} />
+              <NewAppDialog manager={this.props.manager} />
+              <ImportAppDialog manager={this.props.manager} />
+              <ErrDialog manager={this.props.manager} />
+            </div>
+            <MyLogPane manager={this.props.manager} />
           </div>
-          <MyLogPane manager={this.props.manager} />
+          <div className={this.state.splash ? 'splash splash-visible' : 'splash splash-hidden'}>
+            <img src="./images/svg/engine.svg" />
+          </div>
         </div>
       </MuiThemeProvider>
     );
