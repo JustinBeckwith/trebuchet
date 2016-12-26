@@ -2,6 +2,7 @@ const spawn = require('child_process').spawn;
 const _ = require('lodash');
 import * as AppStates from './appStates';
 import EventEmitter from 'events';
+import log from 'electron-log';
 
 export default class devAppWrap extends EventEmitter {
 
@@ -20,13 +21,13 @@ export default class devAppWrap extends EventEmitter {
       { 
         cwd: app.path
       }).on('close', (code) => {
-        console.log(`child process exited with code ${code}`);
+        log.info(`child process exited with code ${code}`);
         this.emit('close', app);
       }).on('error', (err) => {
-        console.log(`child process exited with err`);
+        log.error(`child process exited with err`);
         this.emit('close', app);
       }).on('exit', (code, signal) => {
-        console.log(`child process exited with code ${code} and signal ${signal}`);
+        log.info(`child process exited with code ${code} and signal ${signal}`);
         this.emit('close', app);
       });
     
@@ -39,7 +40,7 @@ export default class devAppWrap extends EventEmitter {
   }
 
   stopAppServer = (app) => {
-    console.log('stopping app server...');
+    log.info('stopping app server...');
     return new Promise((resolve, reject) => {
       this.appServers.forEach((item) => {
         if (item.app.path === app.path) {

@@ -59,6 +59,7 @@
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-tap-event-plugin": "^2.0.1",
+    "spawn-sync": "^1.0.15",
     "uuid": "^3.0.1"
   }
 }

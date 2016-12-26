@@ -42,13 +42,16 @@ export default class MyLogPane extends React.Component {
       manager.getApps().then((apps) => {
         let currentValue = this.state.value;
         let nextValue = currentValue;
+        let visible = this.state.visible;
         if (apps.length == 0) {
+          visible = false;
           nextValue = '';
         } else if (currentValue == app.name) {
           nextValue = apps[0].name;
         } 
         this.setState({
           apps: apps,
+          visible: visible,
           value: nextValue,
         });
       });

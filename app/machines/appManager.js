@@ -105,9 +105,7 @@ export default class AppManager extends EventEmitter {
   }
 
   removeApp = (app) => {
-    this.apps = _.remove(this.apps, (item) => {
-      return item.path != app.path;
-    });
+    _.remove(this.apps, item => (item.path == app.path));
     db.setItem('apps', this.apps);
     this.emit(AppEvents.REMOVED, app);
   }
