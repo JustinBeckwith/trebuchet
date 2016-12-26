@@ -16,18 +16,3 @@ Coming soon.
 
 ## Questions?
 Feel free to submit an issue on the repository, or find me at [@JustinBeckwith](http://twitter.com/JustinBeckwith)
-
-
-## TODO
-- Log split/resize control
-- Add flex support
-- implement drag and drop
-- Tests, tests, tests
-- Logs search
-- Implement error reporting system 
-- Figure out packaging
-- Implement auto-update
-- Swap auto-name library for something custom made (and not likely to get me in trouble)
-- keyboard shortcuts
-- better handle application: and version: in the app.yaml
-- auto download gcloud if not available
