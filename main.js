@@ -12,7 +12,8 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 1024, 
     height: 768,
-    icon: path.join(__dirname, 'app/images/png/64x64.png')
+    icon: path.join(__dirname, 'app/images/png/64x64.png'),
+    backgroundColor: '#333',
   });
   mainWindow.maximize();
 

@@ -1,7 +1,8 @@
 {
   "name": "app-engine-trebuchet",
-  "version": "1.0.0",
-  "description": "A happy litte app that makes manaing App Engine a tad easier.",
+  "productName": "App Engine Trebuchet",
+  "version": "0.0.1",
+  "description": "App Engine Trebuchet is a visual tool that makes it easier to create and deploy applications for App Engine.  It's meant to be a replacement for the App Engine Launcher.",
   "main": "main.js",
   "scripts": {
     "start": "webpack",
@@ -16,8 +17,8 @@
     "tutorial",
     "demo"
   ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "author": "Justin Beckwith <justin.beckwith@gmail.com",
+  "license": "Apache 2.0",
   "devDependencies": {
     "babel-core": "^6.20.0",
     "babel-loader": "^6.2.9",
