@@ -20,7 +20,6 @@ export default class MyToolbar extends React.Component {
     let manager = this.props.manager;
     console.log("Getting those apps....");
     manager.getApps().then(apps => {
-      console.log("# OF APPS: " + apps.length);
       this.setState({
         visible: (apps.length > 0),
       });
@@ -63,7 +62,6 @@ export default class MyToolbar extends React.Component {
   }
 
   render() {
-    console.log("VISIBLE: " + this.state.visible);
     return (
       <Toolbar style={{display: this.state.visible ? '' : 'none'}}>
         <ToolbarGroup firstChild={true}>

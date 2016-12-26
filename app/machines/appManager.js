@@ -10,11 +10,18 @@ import path from 'path';
 import db from 'localforage';
 import fse from 'fs-extra';
 import fs from 'fs';
+import fixPath from 'fix-path';
+import log from 'electron-log';
 
 export default class AppManager extends EventEmitter {
 
   constructor() {
     super();
+    
+    // import OSX path variables so you can use gcloud
+    fixPath();
+    log.debug(process.env.PATH);
+
     this.apps = null;
     this.getApps().then((apps) => {
       this.apps = apps;
@@ -25,7 +32,7 @@ export default class AppManager extends EventEmitter {
     this.devAppWrap = new DevAppWrap();
     this.devAppWrap.on('close', (app) => {
       app.status = AppStates.STOPPED;
-      console.log(`app ${app.path} is stopped!`);
+      log.info(`app ${app.path} is stopped!`);
       this.emit(AppEvents.STOPPED, app);
       this.emit(AppEvents.STATUS_CHANGED, app);
     });
@@ -44,11 +51,10 @@ export default class AppManager extends EventEmitter {
           installed: (component.state.name === "Installed")
         }
       });
-      console.log(installedComponents);
       return db.setItem('deps', installedComponents)
     }).catch(err => {
-      console.log("Error checking components... ")
-      console.log(err);
+      log.error("Error checking components... ")
+      log.error(err);
     });
   }
 
@@ -91,7 +97,7 @@ export default class AppManager extends EventEmitter {
         return app;
       });
     }).catch((err) => {
-      console.log(err);
+      log.error(err);
       return [];
     });
 
@@ -196,7 +202,8 @@ export default class AppManager extends EventEmitter {
     this.emit(AppEvents.STATUS_CHANGED, app);
     let command = this.gcloudWrap.deployApp(app)
       .on('error', (err) => {
-        console.log('some kind of error: ' + err);
+        log.error('Error deploying app');
+        log.error(err);
         app.status = prevStatus;
         this.emit(AppEvents.DEPLOY_FAILED, app);
         this.emit(AppEvents.STATUS_CHANGED, app);
@@ -226,7 +233,7 @@ export default class AppManager extends EventEmitter {
    * Add a new application based on a template. 
    */
   addApp = (appRequest) => {
-    console.log(appRequest);
+    log.info(appRequest);
     let app = {
       name: appRequest.project,
       runtime: appRequest.runtime,
@@ -240,7 +247,6 @@ export default class AppManager extends EventEmitter {
     db.setItem('apps', this.apps);
 
     // attempt to create the app directory
-    console.log(remote.app.getAppPath());
     let srcDir = `${remote.app.getAppPath()}/templates/${appRequest.runtime}/standard/basic`;
     fse.copy(srcDir, app.path, (err) => {
       this.emit(AppEvents.APP_CREATED, app);
@@ -256,7 +262,7 @@ export default class AppManager extends EventEmitter {
    * Import an application from a directory on disk.  
    */
   importApp = (appRequest) => {
-    console.log(appRequest);
+    log.info(appRequest);
     let app = {
       name: appRequest.project,
       path: appRequest.path,
@@ -291,12 +297,12 @@ export default class AppManager extends EventEmitter {
           let command = this.gcloudWrap.installComponent(component)
             .on('exit', (code, signal) => {
               if (code == 0) {
-                console.log('Component ' + component + " installed");
+                log.info('Component ' + component + " installed");
                 // re-run checkdeps so the new results are cached
                 this.checkDeps();
                 resolve();
               } else {
-                console.log('something went wrong installing a component');
+                log.error('something went wrong installing a component');
                 reject(code);
               }
             });
@@ -319,10 +325,10 @@ export default class AppManager extends EventEmitter {
             let p2 = this.gcloudWrap.createApp(app)
               .on('exit', (code, signal) => {
                 if (code == 0) {
-                  console.log('project/app create done!');
+                  log.info('project/app create done!');
                   this.emit(AppEvents.PROJECT_CREATED, app);
                 } else {
-                  console.log('error creating app ' + code);
+                  log.error('error creating app ' + code);
                   this.emit(AppEvents.PROJECT_CREATE_FAILED, '');
                 }
               });
@@ -330,7 +336,7 @@ export default class AppManager extends EventEmitter {
               this.emit(AppEvents.EMIT_LOGS, app);
             });
           } else {
-            console.log('error creating project ' + code);
+            log.error('error creating project ' + code);
             this.emit(AppEvents.PROJECT_CREATE_FAILED, '');
           }
         });

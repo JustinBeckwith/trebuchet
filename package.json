@@ -36,6 +36,8 @@
   "dependencies": {
     "always-tail": "^0.2.0",
     "babel-polyfill": "^6.20.0",
+    "electron-log": "^1.2.2",
+    "fix-path": "^2.1.0",
     "fs-extra": "^1.0.0",
     "js-yaml": "^3.7.0",
     "localforage": "^1.4.3",

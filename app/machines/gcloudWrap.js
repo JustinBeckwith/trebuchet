@@ -1,4 +1,5 @@
 import {spawn, exec} from 'child_process';
+import log from 'electron-log';
 
 export default class gcloudWrap {
 
@@ -6,11 +7,26 @@ export default class gcloudWrap {
     return new Promise((resolve, reject) => {
       let command = spawn('gcloud', ['-v'])
         .on('error', (err) => {
+          log.error('Error running gcloud -v');
+          log.error(err);
           resolve(false);
         })
         .on('exit', (code, signal) => {
-          resolve(code == 0);  
+          if (code != 0) {
+            log.error('Error running gcloud -v');
+            log.error(code + " : " + signal);
+          }
+          resolve(code == 0);
         });
+      
+      command.stdout.setEncoding('utf8');
+      command.stderr.setEncoding('utf8');
+      command.stderr.on('data', (data) => {
+        log.debug(data);
+      });
+      command.stdout.on('data', (data) => {
+        log.debug(data);
+      });
     });
   }
 
