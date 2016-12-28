@@ -49,6 +49,17 @@ export default class MyGrid extends React.Component {
       }
       manager.selectionChanged(selectedApps);
     }
+
+    // handle the click of the back button on the action bar
+    manager.on(AppEvents.EXIT_SELECTION, () => {
+      // There is a bug here.  When selected is set to false, for some reason the grid
+      // isn't respecting this setting.  For now, if the user uses 'select all', and then
+      // click 'back', deselect won't work.  
+      // https://github.com/callemall/material-ui/issues/1897
+      this.setState({
+        selectedRows: [],
+      });
+    });
   }
 
   render() {
@@ -74,8 +85,8 @@ export default class MyGrid extends React.Component {
         <Table 
           multiSelectable={true} 
           style={{display: displayGrid}}
-          onRowSelection={this.onRowSelection}
-          deselectOnClickaway={false}>
+          onRowSelection={this.onRowSelection}>
+          
 
           <TableHeader>
             <TableRow>
@@ -87,7 +98,10 @@ export default class MyGrid extends React.Component {
               <TableHeaderColumn className="iconCol"></TableHeaderColumn>
             </TableRow>
           </TableHeader>
-          <TableBody showRowHover={true}> 
+          <TableBody 
+            showRowHover={true}
+            deselectOnClickaway={false}>
+
             {listItems}
           </TableBody>
         </Table>

@@ -64,7 +64,6 @@ export default class MyMainApp extends React.Component {
             <div className="topContainer">
               <MyAppBar />
               <SelectAppBar manager={this.props.manager} />
-              <MyToolbar manager={this.props.manager} />
               <MyGrid manager={this.props.manager} />
               <MySnackbar manager={this.props.manager} />
               <MyCloudSdkDialog manager={this.props.manager} />

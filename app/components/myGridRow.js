@@ -16,8 +16,7 @@ export default class myGridRow extends React.Component {
       isHovered: false,
       isMenuOpen: false,
       app: this.props.app,
-      action: "Start",
-      selected: false,
+      action: "Start", 
     }
     
     let manager = this.props.manager;
@@ -32,16 +31,6 @@ export default class myGridRow extends React.Component {
       }
     });
     
-    // handle the click of the back button on the action bar
-    manager.on(AppEvents.EXIT_SELECTION, () => {
-      // There is a bug here.  When selected is set to false, for some reason the grid
-      // isn't respecting this setting.  For now, if the user uses 'select all', and then
-      // click 'back', deselect won't work.  
-      // https://github.com/callemall/material-ui/issues/1897
-      this.setState({
-        selected: false,
-      });
-    });
   }
 
   onRowHover = () => {
@@ -101,7 +90,6 @@ export default class myGridRow extends React.Component {
     return (
       <TableRow 
         {...other} 
-        selected={this.selected}
         onRowHover={this.onRowHover} 
         onRowHoverExit={this.onRowHoverExit}>
 
