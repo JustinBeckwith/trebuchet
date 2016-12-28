@@ -63,14 +63,18 @@ export default class gcloudWrap {
     let options = app ? { 
         cwd: app.path
       } : {};
+    
+    log.info('Running gcloud command in ' + options.cwd);
+    log.info(params);
 
     let command = spawn('gcloud', params, options)
       .on('close', (code) => {
-        console.log(`child process exited with code ${code}`);
+        log.info(`child process exited with code ${code}`);
       }).on('error', (err) => {
-        console.log(`child process exited with err`);
+        log.error(`child process exited with err`);
+        log.error(err);
       }).on('exit', (code, signal) => {
-        console.log(`child process exited with code ${code} and signal ${signal}`);
+        log.info(`child process exited with code ${code} and signal ${signal}`);
       });
       
     command.stdout.on('data', (data) => {

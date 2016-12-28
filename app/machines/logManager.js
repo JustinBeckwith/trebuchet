@@ -4,6 +4,7 @@ import fs from 'fs';
 import uuid from 'uuid/v4';
 //import {Tail} from 'tail';
 import Tail from 'always-tail';
+import log from 'electron-log';
 
 const tmpDirName = 'trebuchet';
 
@@ -27,7 +28,8 @@ export default class LogManager {
         this.configureLogger(process, logEntry.writeStream);
       })
       .catch((err) => {
-        console.log("ERROR: " + err);
+        log.error("Error attaching logger to process...");
+        log.error(err);
       }); 
   }
 
@@ -48,9 +50,11 @@ export default class LogManager {
   createTmpDirIfNotExists() {
     return new Promise((resolve, reject) => {
       let tmpDir = path.join(os.tmpdir(), tmpDirName);
-      console.log('tmp dir! ' + tmpDir);
+      log.info('Creating new tmp dir: ' + tmpDir);
       fs.mkdir(tmpDir, (err) => {
         if (err && err.code != "EEXIST") {
+          log.error('Error creating new temp dir for logger');
+          log.error(err);
           return reject(err);
         } else {
           return resolve(tmpDir);
@@ -70,13 +74,13 @@ export default class LogManager {
       // check to see if we already have a log for the app
       let logEntry = this.logMap.get(app.name);
       if (logEntry) {
-        console.log('App log already exists, returning ' + logEntry.logPath);
+        log.info('App log already exists, returning ' + logEntry.logPath);
         return resolve(logEntry);
       } 
 
       // create the app log file in tmp
       let logPath = path.join(tmpDir, uuid());
-      console.log('new log path! ' + logPath);
+      log.info('Creating new log path: ' + logPath);
       let writeStream = fs.createWriteStream(logPath)
         .on('error', (error) => {
           reject(error);
@@ -101,10 +105,11 @@ export default class LogManager {
       }
       let tail = new Tail(logEntry.logPath, '\n', { start: 0 })
         .on('line', (data) => {
-          console.log(data);
+          log.info("LOG: " + data);
         })
         .on("error", (err) => {
-          console.log('ERROR: ', error);
+          log.error('Error reading from process log file.');
+          log.error(err);
         });
         
       this.logMap.set(app.name, Object.assign(logEntry, { tail: tail }));

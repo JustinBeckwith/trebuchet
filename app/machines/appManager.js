@@ -12,6 +12,7 @@ import fse from 'fs-extra';
 import fs from 'fs';
 import fixPath from 'fix-path';
 import log from 'electron-log';
+import chmodr from 'chmodr';
 
 export default class AppManager extends EventEmitter {
 
@@ -20,7 +21,25 @@ export default class AppManager extends EventEmitter {
     
     // import OSX path variables so you can use gcloud
     fixPath();
-    log.debug(process.env.PATH);
+    log.info("PATH: " + process.env.PATH);
+    
+    // allow override of the log level 
+    let logLevel = _.find(process.argv, arg => arg.indexOf('--log-level=') > -1);
+    if (logLevel) {
+      let level = logLevel.split('=')[1];
+      console.log('Setting log level to ' + level);
+      log.transports.console.level = level;
+      log.transports.file.level = level;
+    }
+
+    // getAppPath seems to be one ../ off when packaged vs dev. 
+    this.resourcesPath = remote.app.getAppPath();
+    fs.stat(path.join(this.resourcesPath, 'templates'), (err, stat) => {
+      if (err) {
+        this.resourcesPath = path.normalize(path.join(this.resourcesPath, '../'));
+        log.info(`Resource path is ${this.resourcesPath}`);
+      }
+    });
 
     this.apps = null;
     this.getApps().then((apps) => {
@@ -244,16 +263,33 @@ export default class AppManager extends EventEmitter {
     this.apps.push(app);
     db.setItem('apps', this.apps);
 
-    // attempt to create the app directory
-    let srcDir = `${remote.app.getAppPath()}/templates/${appRequest.runtime}/standard/basic`;
-    fse.copy(srcDir, app.path, (err) => {
-      this.emit(AppEvents.APP_CREATED, app);
-    });
+    
 
-    // create a new cloud project if they wanted to
-    if (appRequest.autoCreate) {
-      this._createCloudProject(app);
-    }
+    // attempt to create the app directory
+    let srcDir = `${this.resourcesPath}/templates/${appRequest.runtime}/standard/basic`;
+    log.info('copying template from ' + srcDir);
+    fse.copy(srcDir, app.path, (err) => {
+      if (err) {
+        log.error("Error creating application");
+        log.error(err);
+      }
+
+      // files copied from the app dir will be 644, preventing execute
+      // even though it works locally! Also webpack has a bug that prevents
+      // using 0755, so I'm using the decimal notation.  
+      chmodr(app.path, 493, (err) => {
+        if (err) {
+          log.error("Error creating application");
+          log.error(err);
+        }
+        this.emit(AppEvents.APP_CREATED, app);
+
+        // create a new cloud project if they wanted to
+        if (appRequest.autoCreate) {
+          this._createCloudProject(app);
+        }
+      })
+    });
   }
 
   /**
@@ -289,9 +325,11 @@ export default class AppManager extends EventEmitter {
    * a promise that resolves when the installation is finished.  
    */
   _installComponentIfNeeded = (component, app) => {
+    log.info('Checking for component ' + component);
     return new Promise((resolve, reject) => {
       this.isComponentInstalled(component).then(installed => {
         if (!installed) {
+          log.info('Component ' + component + ' is not installed.');
           let command = this.gcloudWrap.installComponent(component)
             .on('exit', (code, signal) => {
               if (code == 0) {

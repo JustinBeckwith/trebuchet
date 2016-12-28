@@ -5,14 +5,17 @@
   "description": "App Engine Trebuchet is a visual tool that makes it easier to create and deploy applications for App Engine.  It's meant to be a replacement for the App Engine Launcher.",
   "main": "main.js",
   "scripts": {
-    "start": "webpack",
+    "start": "electron . --log-level=silly",
     "dev": "webpack --watch",
     "package": "electron-packager . 'App Engine Trebuchet' --out bin --icon build/icon.icns --overwrite",
     "pack": "build --dir",
-    "dist": "build -m"
+    "dist": "build -m",
+    "logs-local": "cat ~/Library/Logs/App\\ Engine\\ Trebuchet/log.log",
+    "open-local": "open /Applications/App\\ Engine\\ Trebuchet.app/ --args --log-level silly"
   },
   "build": {
     "appId": "app-engine-trebuchet",
+    "extraResources": "templates/",
     "mac": {
       "category": "public.app-category.developer-tools"
     },
@@ -48,6 +51,7 @@
   "dependencies": {
     "always-tail": "^0.2.0",
     "babel-polyfill": "^6.20.0",
+    "chmodr": "^1.0.2",
     "electron-log": "^1.2.2",
     "fix-path": "^2.1.0",
     "fs-extra": "^1.0.0",
