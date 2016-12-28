@@ -46,7 +46,7 @@ body, html {
   background-color: #333;
   bottom: 0;
   width: 100%;
-  flex: 0 1 400px;
+  flex-basis: 400px;
 }
 
 #app {
@@ -70,7 +70,7 @@ body, html {
 .topContainer {
   width: 100%;
   position: relative;
-  flex: 1 1 auto;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
@@ -119,4 +119,12 @@ body, html {
   visibility: hidden;
   opacity: 0;
   transition: visibility 0s 1s, opacity 1s linear;
+}
+
+.appBar {
+  flex-shrink: 0;
+}
+
+.selectAppBar {
+  position: absolute;
 }

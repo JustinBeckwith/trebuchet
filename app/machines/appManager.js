@@ -150,6 +150,20 @@ export default class AppManager extends EventEmitter {
   }
 
   /**
+   * Invoked when the back button on the selection bar is clicked. 
+   */
+  exitSelection = () => {
+    this.emit(AppEvents.EXIT_SELECTION);
+  }
+
+  /**
+   * Invoked when the selection of applications in the grid has changed.
+   */
+  selectionChanged = (selectedApps) => {
+    this.emit(AppEvents.SELECTION_CHANGED, selectedApps);
+  }
+
+  /**
    * Start a given application using the appropriate emulator.
    */
   startApp = (app) => {

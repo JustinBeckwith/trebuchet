@@ -9,6 +9,7 @@ export default class MyGrid extends React.Component {
     super(props);
     this.state = {
       apps: [],
+      selectedRows: [],
     }
 
     let manager = this.props.manager;
@@ -30,6 +31,24 @@ export default class MyGrid extends React.Component {
         apps: manager.apps
       });
     });
+
+    /**
+     * Raise an event for the appBar when selection in the grid changes. 
+     */
+    this.onRowSelection = (selectedRows) => {
+      console.log(selectedRows);
+      let selectedApps = [];
+      if (selectedRows === "all") {
+        selectedApps = this.state.apps;
+      } else if (selectedRows === "none") {
+        selectedApps = [];
+      } else {
+        for (let idx in selectedRows) {
+          selectedApps.push(this.state.apps[idx]);
+        }
+      }
+      manager.selectionChanged(selectedApps);
+    }
   }
 
   render() {
@@ -51,7 +70,13 @@ export default class MyGrid extends React.Component {
     
     return (
       <div style={{flexGrow: 1, display: 'flex'}}>
-        <Table multiSelectable={true} style={{display: displayGrid}}>
+        
+        <Table 
+          multiSelectable={true} 
+          style={{display: displayGrid}}
+          onRowSelection={this.onRowSelection}
+          deselectOnClickaway={false}>
+
           <TableHeader>
             <TableRow>
               <TableHeaderColumn className="iconCol"></TableHeaderColumn>

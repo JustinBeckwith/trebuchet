@@ -7,6 +7,7 @@ export default class MyAppBar extends React.Component {
       <AppBar
         title="App Engine Trebuchet"
         titleStyle={{fontSize: '18px'}}
+        className="appBar"
         iconClassNameRight="muidocs-icon-navigation-expand-more"
       />
     );

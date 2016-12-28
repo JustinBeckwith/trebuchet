@@ -1,6 +1,7 @@
 import React from 'react'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import MyAppBar from './myAppBar';
+import SelectAppBar from './selectAppBar';
 import MyGrid from './myGrid';
 import MyToolbar from './myToolbar';
 import MySnackbar from './mySnackbar';
@@ -62,6 +63,7 @@ export default class MyMainApp extends React.Component {
           <div className="fullContainer">
             <div className="topContainer">
               <MyAppBar />
+              <SelectAppBar manager={this.props.manager} />
               <MyToolbar manager={this.props.manager} />
               <MyGrid manager={this.props.manager} />
               <MySnackbar manager={this.props.manager} />
