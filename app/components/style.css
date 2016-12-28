@@ -127,4 +127,12 @@ body, html {
 
 .selectAppBar {
   position: absolute;
+  background-color: #f2f2f2;
+}
+
+.numSelectedLabel {
+  color: #3c80f6;
+  margin-left: 100px;
+  line-height: 64px;
+  float: left;
 }

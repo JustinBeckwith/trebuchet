@@ -11,6 +11,7 @@ export default class SelectAppBar extends React.Component {
 
     this.state = {
       visible: false,
+      itemCount: 0,
     }
 
     let manager = this.props.manager;
@@ -18,7 +19,8 @@ export default class SelectAppBar extends React.Component {
       let visible = (apps.length > 0);
       this.setState({
         visible: visible,
-      })
+        itemCount: apps.length,
+      });
     });
 
     this.backClick = (e) => {
@@ -35,15 +37,21 @@ export default class SelectAppBar extends React.Component {
     return (
       <AppBar
         title="Back"
-        style={{display: this.state.visible ? '' : 'none', position: 'absolute'}}
-        titleStyle={{fontSize: '14px'}}
-        iconStyleLeft={{float: 'left'}}
+        style={{
+          display: this.state.visible ? '' : 'none', 
+          position: 'absolute',
+          backgroundColor: '#f2f2f2',
+        }}
+        titleStyle={{fontSize: '18px', float: 'left', color: '#212121'}}
+        iconStyleLeft={{float: 'left', color: '#212121'}}
         className="selectAppBar"
         iconElementLeft={
           <IconButton onClick={this.backClick}>
-            <NavigationBack />
-          </IconButton>}
-      />
+            <NavigationBack color="#212121" />
+          </IconButton>}>
+        
+        <span className="numSelectedLabel">{this.state.itemCount} selected</span>
+      </AppBar>
     );
   }
 }
