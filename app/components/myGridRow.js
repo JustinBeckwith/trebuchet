@@ -76,6 +76,8 @@ export default class myGridRow extends React.Component {
         appManager.removeApp(app);
         break;
     }
+    // de-select items after the command is run
+    appManager.exitSelection();
   }
 
   getIconStyle() {

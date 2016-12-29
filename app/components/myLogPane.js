@@ -7,6 +7,7 @@ import IconButton from 'material-ui/IconButton';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import ClearIcon from 'material-ui/svg-icons/action/delete';
 import {grey500, grey800} from 'material-ui/styles/colors';
+import log from 'electron-log';
 
 export default class MyLogPane extends React.Component {
   constructor(props) {
@@ -22,6 +23,7 @@ export default class MyLogPane extends React.Component {
      * choose a default log to see.  Bind the logger to the view. 
      */
     manager.on(AppEvents.VIEW_LOGS, (app) => {
+      log.info('VIEW LOGS: ' + (app ? app.name : "<no app>"));
       if (!this.state.value || (app && this.state.value != app.name)) {
         let defaultApp = this.state.apps.length > 0 ? this.state.apps[0].name : null;
         let definedApp = app ? app.name : null;
@@ -72,6 +74,7 @@ export default class MyLogPane extends React.Component {
      * New logs are available! 
      */
     manager.on(AppEvents.EMIT_LOGS, (app) => { 
+      log.info('EMIT LOGS: ' + app.name);
       if (this.state.value != app.name) {
         document.getElementById("logContent").innerText = '';
       }

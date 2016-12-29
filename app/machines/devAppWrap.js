@@ -39,17 +39,23 @@ export default class devAppWrap extends EventEmitter {
     return server;
   }
 
+  /**
+   * Stop an instance of an app server, or just return if there isn't
+   * one available matching the app name.  
+   */
   stopAppServer = (app) => {
     log.info('stopping app server...');
     return new Promise((resolve, reject) => {
-      this.appServers.forEach((item) => {
+      for (let item of this.appServers) {
+        console.log(item);
         if (item.app.path === app.path) {
           if (item.server) {
             item.server.kill();
             resolve();
           }
         }
-      });
+      }
+      resolve();
     });
   }
 

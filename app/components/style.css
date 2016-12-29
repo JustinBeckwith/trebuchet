@@ -133,6 +133,5 @@ body, html {
 .numSelectedLabel {
   color: #3c80f6;
   margin-left: 100px;
-  line-height: 64px;
-  float: left;
+  flex-grow: 1;
 }
