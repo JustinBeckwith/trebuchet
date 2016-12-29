@@ -121,7 +121,7 @@ export default class myGridRow extends React.Component {
         {/* Hack:  https://github.com/callemall/material-ui/issues/2608 */}
         {other.children[0]}
         
-        <TableRowColumnWrapper className="iconCol">
+        <TableRowColumnWrapper className="iconCol" style={{verticalAlign: 'middle'}}>
           <MyStatusIcon status={app.status} />
         </TableRowColumnWrapper>
         <TableRowColumnWrapper className="medCol">{app.name}</TableRowColumnWrapper>

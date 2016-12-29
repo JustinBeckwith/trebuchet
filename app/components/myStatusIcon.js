@@ -12,9 +12,14 @@ export default class myStatusIcon extends React.Component {
     }
     render() {
         var color;
+        let iconStyle = {
+            display: 'inline-block',
+            position: 'relative',
+            verticalAlign: 'middle',
+        }
         switch (this.props.status) {
             case AppStates.STARTED: 
-                return <PlayIcon color={green500} />
+                return <PlayIcon color={green500} style={iconStyle} />
             case AppStates.STARTING:
                 return <RefreshIndicator
                     size={20}
@@ -22,7 +27,7 @@ export default class myStatusIcon extends React.Component {
                     top={0}
                     status="loading" 
                     loadingColor={lightBlue500}
-                    style={{display: 'inline-block', position: 'relative'}} />
+                    style={iconStyle} />
             case AppStates.STOPPING:
                 return <RefreshIndicator
                     size={20}
@@ -30,7 +35,7 @@ export default class myStatusIcon extends React.Component {
                     top={0}
                     status="loading" 
                     loadingColor={red500}
-                    style={{display: 'inline-block', position: 'relative'}} />
+                    style={iconStyle} />
             case AppStates.DEPLOYING:
                 return <RefreshIndicator
                     size={20}
@@ -38,9 +43,9 @@ export default class myStatusIcon extends React.Component {
                     top={0}
                     status="loading" 
                     loadingColor={orange500}
-                    style={{display: 'inline-block', position: 'relative'}} />
+                    style={iconStyle} />
             case AppStates.STOPPED:
-                return <StopIcon color={grey500} />
+                return <StopIcon color={grey500} style={iconStyle} />
         }
     }
 }
