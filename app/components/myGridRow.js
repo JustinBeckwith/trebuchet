@@ -107,19 +107,6 @@ export default class myGridRow extends React.Component {
     appManager.exitSelection();
   }
 
-  onRowClick = (e) => {
-    console.log("ON ROW CLICK");
-    console.log(e);
-    e.preventDefault();
-    e.stopPropagation();
-  }
-
-  getIconStyle() {
-    //return this.state.isHovered || this.state.isMenuOpen ? {display: "inline-block"} : {display: "none"};
-    // This doesn't work.  https://github.com/callemall/material-ui/issues/3995
-    return {};
-  }
-
   render() {
     let { app, manager, ...other } = this.props;
     app = this.state.app;
@@ -144,26 +131,38 @@ export default class myGridRow extends React.Component {
           
           <div className="rowIcons">
             <IconButton style={{display: (this.state.isHovered && this.state.app.status == AppStates.STOPPED) ? '' : 'none'}} 
+                        tooltip="Start application"
+                        tooltipPosition="bottom-center"
                         onClick={this.startClick}>
               <StartIcon color={grey700} />
             </IconButton>
             <IconButton style={{display: (this.state.isHovered && this.state.app.status == AppStates.STARTED) ? '' : 'none'}} 
+                        tooltip="Stop application"
+                        tooltipPosition="bottom-center"
                         onClick={this.stopClick}>
               <StopIcon color={grey700} />
             </IconButton>
             <IconButton style={{display: this.state.isHovered ? '' : 'none'}} 
+                        tooltip="Browse locally"
+                        tooltipPosition="bottom-center"
                         onClick={this.browseClick}>
               <BrowseIcon color={grey700} />
             </IconButton>
             <IconButton style={{display: this.state.isHovered ? '' : 'none'}} 
+                        tooltip="View logs"
+                        tooltipPosition="bottom-center"
                         onClick={this.logsClick}>
               <LogsIcon color={grey700} />
             </IconButton>
           </div>
 
-          <IconMenu style={this.getIconStyle()} 
+          <IconMenu style={{position: 'absolute'}}
                     onChange={this.onRequestChange}
-                    iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+                    iconButtonElement={
+                      <IconButton tooltip="More actions"
+                                  tooltipPosition="bottom-left">
+                        <MoreVertIcon />
+                      </IconButton>}
                     anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                     targetOrigin={{horizontal: 'right', vertical: 'top'}} 
                     >
