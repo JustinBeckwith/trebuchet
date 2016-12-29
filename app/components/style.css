@@ -135,3 +135,10 @@ body, html {
   margin-left: 100px;
   flex-grow: 1;
 }
+
+.rowIcons {
+  position: absolute;
+  float: right;
+  background-color: #F5F5F5;
+  right: 30px;
+}

@@ -28,11 +28,19 @@ export default class SelectAppBar extends React.Component {
     let manager = this.props.manager;
     manager.on(AppEvents.SELECTION_CHANGED, (apps) => {
       let visible = (apps.length > 0);
-      this.setState({
-        visible: visible,
-        itemCount: apps.length,
-        selectedApps: apps,
-      });
+      let timeIn = visible ? 50 : 0;
+      if (!visible && this.timer) {
+        console.log('clearing timer!');
+        clearTimeout(this.timer);
+      }
+      this.timer = setTimeout(() => {
+        console.log('updating visibility...');
+        this.setState({
+          visible: visible,
+          itemCount: apps.length,
+          selectedApps: apps,
+        });
+      }, timeIn);
     });
 
     manager.on(AppEvents.EXIT_SELECTION, () => {
@@ -125,7 +133,7 @@ export default class SelectAppBar extends React.Component {
         style={{
           display: this.state.visible ? 'flex' : 'none', 
           position: 'absolute',
-          backgroundColor: '#f2f2f2',
+          backgroundColor: '#E0F5FF',
           alignItems: 'center',
         }}
         titleStyle={titleStyle}

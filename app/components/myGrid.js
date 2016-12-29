@@ -62,6 +62,18 @@ export default class MyGrid extends React.Component {
     });
   }
 
+  /**
+   * This is a terrible hack that prevents the row from being selected unless
+   * the user clicked on the checkbox column. 
+   */
+  onCellClick = (rowNumber, columnNumber, e) => {
+    if (columnNumber > 0) {
+      e.preventDefault();
+      e.stopPropagation();
+      setTimeout(this.props.manager.exitSelection, 2);
+    }
+  }
+
   render() {
     let listItems = this.state.apps.map((app) =>
       <MyGridRow 
@@ -85,6 +97,7 @@ export default class MyGrid extends React.Component {
         <Table 
           multiSelectable={true} 
           style={{display: displayGrid}}
+          onCellClick={this.onCellClick}
           onRowSelection={this.onRowSelection}>
           
 
@@ -92,9 +105,8 @@ export default class MyGrid extends React.Component {
             <TableRow>
               <TableHeaderColumn className="iconCol"></TableHeaderColumn>
               <TableHeaderColumn className="medCol">Name</TableHeaderColumn>
-              <TableHeaderColumn>Path</TableHeaderColumn>
-              <TableHeaderColumn className="smallCol">Admin Port</TableHeaderColumn>
               <TableHeaderColumn className="smallCol">Port</TableHeaderColumn>
+              <TableHeaderColumn>Path</TableHeaderColumn>
               <TableHeaderColumn className="iconCol"></TableHeaderColumn>
             </TableRow>
           </TableHeader>

@@ -4,10 +4,16 @@ import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import StartIcon from 'material-ui/svg-icons/av/play-circle-outline';
+import StopIcon from 'material-ui/svg-icons/av/pause-circle-outline';
+import BrowseIcon from 'material-ui/svg-icons/action/open-in-browser';
+import LogsIcon from 'material-ui/svg-icons/communication/clear-all';
+import {grey700} from 'material-ui/styles/colors';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import MyStatusIcon from './myStatusIcon';
 import * as AppStates from './../machines/appStates';
 import * as AppEvents from './../machines/appEvents';
+import TableRowColumnWrapper from './tableRowColumnWrapper';
 
 export default class myGridRow extends React.Component {
   constructor(props) {
@@ -39,6 +45,27 @@ export default class myGridRow extends React.Component {
 
   onRowHoverExit = () => {
     this.setState({ isHovered: false });
+  }
+
+  startClick = (e) => {
+    e.preventDefault();
+    this.onRequestChange(null, "Start");
+  }
+
+  stopClick = (e) => {
+    e.preventDefault();
+    this.onRequestChange(null, "Stop");
+  }
+
+  logsClick = (e) => {
+    e.preventDefault();
+    this.onRequestChange(null, "Logs");
+  }
+
+  browseClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    this.onRequestChange(null, "Browse");
   }
 
   onRequestChange = (source, value) => {  
@@ -80,6 +107,13 @@ export default class myGridRow extends React.Component {
     appManager.exitSelection();
   }
 
+  onRowClick = (e) => {
+    console.log("ON ROW CLICK");
+    console.log(e);
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
   getIconStyle() {
     //return this.state.isHovered || this.state.isMenuOpen ? {display: "inline-block"} : {display: "none"};
     // This doesn't work.  https://github.com/callemall/material-ui/issues/3995
@@ -92,6 +126,7 @@ export default class myGridRow extends React.Component {
     return (
       <TableRow 
         {...other} 
+        onClick={this.onRowClick}
         onRowHover={this.onRowHover} 
         onRowHoverExit={this.onRowHoverExit}>
 
@@ -99,21 +134,39 @@ export default class myGridRow extends React.Component {
         {/* Hack:  https://github.com/callemall/material-ui/issues/2608 */}
         {other.children[0]}
         
-        <TableRowColumn className="iconCol">
+        <TableRowColumnWrapper className="iconCol">
           <MyStatusIcon status={app.status} />
-        </TableRowColumn>
-        <TableRowColumn className="medCol">{app.name}</TableRowColumn>
-        <TableRowColumn>{app.path}</TableRowColumn>
-        <TableRowColumn className="smallCol">{app.adminPort}</TableRowColumn>
-        <TableRowColumn className="smallCol">{app.port}</TableRowColumn>
-        <TableRowColumn className="iconCol">
+        </TableRowColumnWrapper>
+        <TableRowColumnWrapper className="medCol">{app.name}</TableRowColumnWrapper>
+        <TableRowColumnWrapper className="smallCol">{app.port}</TableRowColumnWrapper>
+        <TableRowColumnWrapper>{app.path}</TableRowColumnWrapper>
+        <TableRowColumnWrapper className="iconCol">
+          
+          <div className="rowIcons">
+            <IconButton style={{display: (this.state.isHovered && this.state.app.status == AppStates.STOPPED) ? '' : 'none'}} 
+                        onClick={this.startClick}>
+              <StartIcon color={grey700} />
+            </IconButton>
+            <IconButton style={{display: (this.state.isHovered && this.state.app.status == AppStates.STARTED) ? '' : 'none'}} 
+                        onClick={this.stopClick}>
+              <StopIcon color={grey700} />
+            </IconButton>
+            <IconButton style={{display: this.state.isHovered ? '' : 'none'}} 
+                        onClick={this.browseClick}>
+              <BrowseIcon color={grey700} />
+            </IconButton>
+            <IconButton style={{display: this.state.isHovered ? '' : 'none'}} 
+                        onClick={this.logsClick}>
+              <LogsIcon color={grey700} />
+            </IconButton>
+          </div>
+
           <IconMenu style={this.getIconStyle()} 
                     onChange={this.onRequestChange}
                     iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
                     anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                     targetOrigin={{horizontal: 'right', vertical: 'top'}} 
                     >
-            <MenuItem primaryText="Info" value="Info" />
             <MenuItem primaryText="Edit" value="Edit" />
             <MenuItem primaryText="Remove" value="Remove" />
             <Divider />
@@ -127,7 +180,8 @@ export default class myGridRow extends React.Component {
             <MenuItem primaryText="Deploy" value="Deploy" />
             <MenuItem primaryText="Dashboard" value="Dashboard" />
           </IconMenu>
-       </TableRowColumn>
+          
+       </TableRowColumnWrapper>
      </TableRow>
     );
   }
