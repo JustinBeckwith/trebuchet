@@ -8,6 +8,9 @@ addons:
   apt:
     packages:
       - libxss1
+      - icnsutils 
+      - graphicsmagick 
+      - xz-utils
 script:
   - webpack
 after_success:
