@@ -3,6 +3,11 @@ node_js:
   - "6"
 os: 
   - osx
+  - linux
+addons:
+  apt:
+    packages:
+      - libxss1
 script:
   - webpack
 after_success:
