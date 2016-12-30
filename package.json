@@ -10,7 +10,7 @@
     "dev": "webpack --watch",
     "package": "electron-packager . 'App Engine Trebuchet' --out bin --icon build/icon.icns --overwrite",
     "pack": "build --dir",
-    "dist": "build -ml",
+    "dist": "build -mlw",
     "logs-local": "cat ~/Library/Logs/App\\ Engine\\ Trebuchet/log.log",
     "open-local": "open /Applications/App\\ Engine\\ Trebuchet.app/ --args --log-level silly"
   },
