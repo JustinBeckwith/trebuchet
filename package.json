@@ -6,6 +6,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron . --log-level=silly",
+    "build": "webpack",
     "dev": "webpack --watch",
     "package": "electron-packager . 'App Engine Trebuchet' --out bin --icon build/icon.icns --overwrite",
     "pack": "build --dir",

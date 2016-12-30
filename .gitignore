@@ -4,3 +4,4 @@ dist
 *.bundle.js
 *.bundle.js.map
 *.pyc
+npm-debug.log

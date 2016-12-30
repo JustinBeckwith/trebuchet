@@ -23,9 +23,9 @@ module.exports = {
     }]
   },
   plugins: [
-    new ElectronConnectWebpackPlugin({
-      path: path.join(__dirname, "."),
-      logLevel: 0
-    }),
+    // new ElectronConnectWebpackPlugin({
+    //   path: path.join(__dirname, "."),
+    //   logLevel: 0
+    // }),
   ]
 }
