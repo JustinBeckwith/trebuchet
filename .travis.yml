@@ -1,17 +1,16 @@
 language: node_js
 node_js:
   - "6"
+
 os: 
   - osx
-  - linux
-addons:
-  apt:
-    packages:
-      - libxss1
-      - icnsutils 
-      - graphicsmagick 
-      - xz-utils
+
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install gnu-tar graphicsmagick xz; fi
+
 script:
   - webpack
+
 after_success:
   - npm run dist
