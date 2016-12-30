@@ -13,6 +13,7 @@ import ImportAppDialog from './importAppDialog';
 import ErrDialog from './errDialog';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {fade} from 'material-ui/utils/colorManipulator';
+import {remote} from 'electron';
 import {
   blue700, blue900, 
   grey100, grey300, grey400, grey500,
@@ -53,6 +54,13 @@ export default class MyMainApp extends React.Component {
         splash: false,
       });
     }, 2000);
+
+    document.onkeydown = (event) => {
+      let evt = event || window.event;
+      if (evt.metaKey && evt.key === "d") {
+        remote.getCurrentWindow().openDevTools();
+      }
+    }
 
   }
 
