@@ -111,6 +111,7 @@ export default class AppManager extends EventEmitter {
     
     // attempt to load from IndexedDB
     this._getAppsPromise = db.getItem('apps').then((apps) => {
+      if (apps == null) apps = [];
       return apps.map((app) => {
         app.status = AppStates.STOPPED;
         return app;

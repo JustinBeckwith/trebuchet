@@ -54,6 +54,7 @@
     "always-tail": "^0.2.0",
     "babel-polyfill": "^6.20.0",
     "chmodr": "^1.0.2",
+    "cross-spawn": "^5.0.1",
     "electron-log": "^1.2.2",
     "fix-path": "^2.1.0",
     "fs-extra": "^1.0.0",

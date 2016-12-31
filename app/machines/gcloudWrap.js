@@ -1,4 +1,5 @@
-import {spawn, exec} from 'child_process';
+import {exec} from 'child_process';
+import spawn from 'cross-spawn';
 import log from 'electron-log';
 
 export default class gcloudWrap {
@@ -61,7 +62,7 @@ export default class gcloudWrap {
   runAppCommand = (app, params) => {
     
     let options = app ? { 
-        cwd: app.path
+        cwd: app.path,
       } : {};
     
     log.info('Running gcloud command in ' + options.cwd);

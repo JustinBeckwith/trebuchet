@@ -1,8 +1,8 @@
-const spawn = require('child_process').spawn;
-const _ = require('lodash');
+import _ from 'lodash';
 import * as AppStates from './appStates';
 import EventEmitter from 'events';
 import log from 'electron-log';
+import spawn from 'cross-spawn';
 
 export default class devAppWrap extends EventEmitter {
 
@@ -13,6 +13,11 @@ export default class devAppWrap extends EventEmitter {
 
   startAppServer = (app) => {
     
+    /**
+     * This uses the cross-spawn npm module to work around issues with spawn not
+     * preserving path on Windows.  
+     * https://github.com/nodejs/node-v0.x-archive/issues/2318
+     */
     let server = spawn('dev_appserver.py', [
       '.',
       '--skip_sdk_update_check=yes', 
