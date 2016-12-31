@@ -232,15 +232,14 @@ export default class AppManager extends EventEmitter {
     let prevStatus = app.status;
     app.status = AppStates.DEPLOYING;
     this.emit(AppEvents.STATUS_CHANGED, app);
-    let command = this.gcloudWrap.deployApp(app)
-      .on('error', (err) => {
+    return this.gcloudWrap.deployApp(app).then((cp) => {
+      cp.on('error', (err) => {
         log.error('Error deploying app');
         log.error(err);
         app.status = prevStatus;
         this.emit(AppEvents.DEPLOY_FAILED, app);
         this.emit(AppEvents.STATUS_CHANGED, app);
-      })
-      .on('exit', (code, signal) => {
+      }).on('exit', (code, signal) => {
         app.status = prevStatus;
         if (code == 0) {
           this.emit(AppEvents.DEPLOY_SUCCEED, app);  
@@ -249,8 +248,9 @@ export default class AppManager extends EventEmitter {
         }
         this.emit(AppEvents.STATUS_CHANGED, app);
       });
-    this.logManager.attachLogger(app, command);
-    this.emit(AppEvents.EMIT_LOGS, app);
+      this.logManager.attachLogger(app, cp);
+      this.emit(AppEvents.EMIT_LOGS, app);
+    });
   }
 
   getAppLog = (app) => {
@@ -345,8 +345,8 @@ export default class AppManager extends EventEmitter {
       this.isComponentInstalled(component).then(installed => {
         if (!installed) {
           log.info('Component ' + component + ' is not installed.');
-          let command = this.gcloudWrap.installComponent(component)
-            .on('exit', (code, signal) => {
+          return this.gcloudWrap.installComponent(component).then(cp => {
+            cp.on('exit', (code, signal) => {
               if (code == 0) {
                 log.info('Component ' + component + " installed");
                 // re-run checkdeps so the new results are cached
@@ -357,8 +357,9 @@ export default class AppManager extends EventEmitter {
                 reject(code);
               }
             });
-          this.logManager.attachLogger(app, command).then(() => {
-            this.emit(AppEvents.EMIT_LOGS, app);
+            this.logManager.attachLogger(app, cp).then(() => {
+              this.emit(AppEvents.EMIT_LOGS, app);
+            });
           });
         } else {
           resolve();
@@ -370,11 +371,11 @@ export default class AppManager extends EventEmitter {
   _createCloudProject = (app) => {
     this.emit(AppEvents.PROJECT_CREATING, app);
     this._installComponentIfNeeded('alpha', app).then(() => {
-      let p1 = this.gcloudWrap.createProject(app)
-        .on('exit', (code, signal) => {
+      return this.gcloudWrap.createProject(app).then(p1 => {
+        p1.on('exit', (code, signal) => {
           if (code == 0) {
-            let p2 = this.gcloudWrap.createApp(app)
-              .on('exit', (code, signal) => {
+            this.gcloudWrap.createApp(app).then(p2 => {
+              p2.on('exit', (code, signal) => {
                 if (code == 0) {
                   log.info('project/app create done!');
                   this.emit(AppEvents.PROJECT_CREATED, app);
@@ -383,16 +384,18 @@ export default class AppManager extends EventEmitter {
                   this.emit(AppEvents.PROJECT_CREATE_FAILED, '');
                 }
               });
-            this.logManager.attachLogger(app, p2).then(() => {
-              this.emit(AppEvents.EMIT_LOGS, app);
+              this.logManager.attachLogger(app, p2).then(() => {
+                this.emit(AppEvents.EMIT_LOGS, app);
+              });
             });
           } else {
             log.error('error creating project ' + code);
             this.emit(AppEvents.PROJECT_CREATE_FAILED, '');
           }
         });
-      this.logManager.attachLogger(app, p1).then(() => {
-        this.emit(AppEvents.EMIT_LOGS, app);
+        this.logManager.attachLogger(app, p1).then(() => {
+          this.emit(AppEvents.EMIT_LOGS, app);
+        });
       });
     });
   }

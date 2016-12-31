@@ -1,6 +1,7 @@
 import {exec} from 'child_process';
 import spawn from 'cross-spawn';
 import log from 'electron-log';
+import Sudoer from 'electron-sudo';
 
 export default class gcloudWrap {
 
@@ -61,6 +62,38 @@ export default class gcloudWrap {
 
   runAppCommand = (app, params) => {
     
+    return new Promise((resolve, reject) => {
+      let options = app ? { 
+          cwd: app.path,
+        } : {};
+      
+      log.info('Running gcloud command in ' + options.cwd);
+      log.info(params);
+
+      let command = spawn('gcloud', params, options)
+        .on('close', (code) => {
+          log.info(`child process exited with code ${code}`);
+        }).on('error', (err) => {
+          log.error(`child process exited with err`);
+          log.error(err);
+        }).on('exit', (code, signal) => {
+          log.info(`child process exited with code ${code} and signal ${signal}`);
+        });
+        
+      command.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+      });
+      
+      command.stderr.on('data', (data) => {
+        console.log(`stderr: ${data}`);
+      });
+
+      resolve(command);
+    });
+  }
+
+  runWinAppCommand = (app, params) => {
+    
     let options = app ? { 
         cwd: app.path,
       } : {};
@@ -68,8 +101,12 @@ export default class gcloudWrap {
     log.info('Running gcloud command in ' + options.cwd);
     log.info(params);
 
-    let command = spawn('gcloud', params, options)
-      .on('close', (code) => {
+    let sudoer = new Sudoer({
+      name: 'App Engine Trebuchet'
+    });
+
+    return sudoer.spawn('gcloud', params, options).then((cp) => {
+      cp.on('close', (code) => {
         log.info(`child process exited with code ${code}`);
       }).on('error', (err) => {
         log.error(`child process exited with err`);
@@ -78,15 +115,16 @@ export default class gcloudWrap {
         log.info(`child process exited with code ${code} and signal ${signal}`);
       });
       
-    command.stdout.on('data', (data) => {
-      console.log(`stdout: ${data}`);
-    });
-    
-    command.stderr.on('data', (data) => {
-      console.log(`stderr: ${data}`);
-    });
+      cp.output.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+      });
+      
+      cp.output.stderr.on('data', (data) => {
+        console.log(`stderr: ${data}`);
+      });
 
-    return command;
+      return command;
+    });
   }
 
   deployApp = (app) => {
@@ -99,9 +137,18 @@ export default class gcloudWrap {
       ['alpha', 'projects', 'create', app.name]);
   }
 
+  /**
+   * Install a component for the gcloud tool.  On Windows, this requires
+   * elevation, so use the electron-sudo module.
+   */
   installComponent = (component) => {
-    return this.runAppCommand(null,
-      ['components', 'install', component, '-q']);
+    if (/^win/.test(process.platform)) {
+      return this.runWinAppCommand(null, 
+        ['components', 'install', component, '-q']);
+    } else {
+      return this.runAppCommand(null,
+        ['components', 'install', component, '-q']);
+    }
   }
 
   createApp = (app) => {
