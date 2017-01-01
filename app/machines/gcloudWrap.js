@@ -1,7 +1,7 @@
 import {exec} from 'child_process';
 import spawn from 'cross-spawn';
 import log from 'electron-log';
-import Sudoer from 'electron-sudo';
+import uac from './../uac/uac';
 
 export default class gcloudWrap {
 
@@ -101,10 +101,6 @@ export default class gcloudWrap {
     log.info('Running gcloud command in ' + options.cwd);
     log.info(params);
 
-    let sudoer = new Sudoer({
-      name: 'App Engine Trebuchet'
-    });
-
     return sudoer.spawn('gcloud', params, options).then((cp) => {
       cp.on('close', (code) => {
         log.info(`child process exited with code ${code}`);
@@ -115,15 +111,15 @@ export default class gcloudWrap {
         log.info(`child process exited with code ${code} and signal ${signal}`);
       });
       
-      cp.output.stdout.on('data', (data) => {
+      cp.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
       });
       
-      cp.output.stderr.on('data', (data) => {
+      cp.stderr.on('data', (data) => {
         console.log(`stderr: ${data}`);
       });
 
-      return command;
+      return cp;
     });
   }
 
@@ -142,9 +138,8 @@ export default class gcloudWrap {
    * elevation, so use the electron-sudo module.
    */
   installComponent = (component) => {
-    if (/^win/.test(process.platform)) {
-      return this.runWinAppCommand(null, 
-        ['components', 'install', component, '-q']);
+    if (/^win/.test(process.platform)) {      
+      return uac.installComponent(component);
     } else {
       return this.runAppCommand(null,
         ['components', 'install', component, '-q']);

@@ -346,20 +346,22 @@ export default class AppManager extends EventEmitter {
         if (!installed) {
           log.info('Component ' + component + ' is not installed.');
           return this.gcloudWrap.installComponent(component).then(cp => {
-            cp.on('exit', (code, signal) => {
-              if (code == 0) {
-                log.info('Component ' + component + " installed");
-                // re-run checkdeps so the new results are cached
-                this.checkDeps();
-                resolve();
-              } else {
-                log.error('something went wrong installing a component');
-                reject(code);
-              }
-            });
-            this.logManager.attachLogger(app, cp).then(() => {
-              this.emit(AppEvents.EMIT_LOGS, app);
-            });
+            if (cp.on) {
+              cp.on('exit', (code, signal) => {
+                if (code == 0) {
+                  log.info('Component ' + component + " installed");
+                  // re-run checkdeps so the new results are cached
+                  this.checkDeps();
+                  resolve();
+                } else {
+                  log.error('something went wrong installing a component');
+                  reject(code);
+                }
+              });
+              this.logManager.attachLogger(app, cp).then(() => {
+                this.emit(AppEvents.EMIT_LOGS, app);
+              });
+            }
           });
         } else {
           resolve();
