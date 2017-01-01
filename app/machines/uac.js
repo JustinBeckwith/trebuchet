@@ -4,10 +4,10 @@ import {spawn} from 'child_process';
 import log from 'electron-log';
 import {remote} from 'electron';
 
-exports.installComponent = (component) => {
+exports.installComponent = (component, resourcesPath) => {
   return new Promise((resolve, reject) => {
     let options = { shell: true };
-    let uacDir = path.join(remote.app.getAppPath(), path.normalize('app/uac'));
+    let uacDir = path.join(resourcesPath, path.normalize('extras/uac'));
     let elevatePath = path.join(uacDir, 'elevate-' + os.arch() + '.exe');
     let batchPath = path.join(uacDir, "installComponent.bat");
 

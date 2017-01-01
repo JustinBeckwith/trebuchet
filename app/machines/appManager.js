@@ -34,7 +34,7 @@ export default class AppManager extends EventEmitter {
 
     // getAppPath seems to be one ../ off when packaged vs dev. 
     this.resourcesPath = remote.app.getAppPath();
-    fs.stat(path.join(this.resourcesPath, 'templates'), (err, stat) => {
+    fs.stat(path.join(this.resourcesPath, 'extras'), (err, stat) => {
       if (err) {
         this.resourcesPath = path.normalize(path.join(this.resourcesPath, '../'));
         log.info(`Resource path is ${this.resourcesPath}`);
@@ -67,7 +67,7 @@ export default class AppManager extends EventEmitter {
       let installedComponents = results.map((component) => {
         return {
           id: component.id,
-          installed: (component.state.name === "Installed")
+          installed: (component.state.name === "Installed" || component.state.name === "Update Available")
         }
       });
       return db.setItem('deps', installedComponents)
@@ -281,7 +281,7 @@ export default class AppManager extends EventEmitter {
     
 
     // attempt to create the app directory
-    let srcDir = `${this.resourcesPath}/templates/${appRequest.runtime}/standard/basic`;
+    let srcDir = `${this.resourcesPath}/extras/templates/${appRequest.runtime}/standard/basic`;
     log.info('copying template from ' + srcDir);
     fse.copy(srcDir, app.path, (err) => {
       if (err) {
@@ -345,23 +345,21 @@ export default class AppManager extends EventEmitter {
       this.isComponentInstalled(component).then(installed => {
         if (!installed) {
           log.info('Component ' + component + ' is not installed.');
-          return this.gcloudWrap.installComponent(component).then(cp => {
-            if (cp.on) {
-              cp.on('exit', (code, signal) => {
-                if (code == 0) {
-                  log.info('Component ' + component + " installed");
-                  // re-run checkdeps so the new results are cached
-                  this.checkDeps();
-                  resolve();
-                } else {
-                  log.error('something went wrong installing a component');
-                  reject(code);
-                }
-              });
-              this.logManager.attachLogger(app, cp).then(() => {
-                this.emit(AppEvents.EMIT_LOGS, app);
-              });
-            }
+          return this.gcloudWrap.installComponent(component, this.resourcesPath).then(cp => {
+            cp.on('exit', (code, signal) => {
+              if (code == 0) {
+                log.info('Component ' + component + " installed");
+                // re-run checkdeps so the new results are cached
+                this.checkDeps();
+                resolve();
+              } else {
+                log.error('something went wrong installing a component');
+                reject(code);
+              }
+            });
+            this.logManager.attachLogger(app, cp).then(() => {
+              this.emit(AppEvents.EMIT_LOGS, app);
+            });
           });
         } else {
           resolve();

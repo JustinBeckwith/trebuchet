@@ -1,7 +1,7 @@
 import {exec} from 'child_process';
 import spawn from 'cross-spawn';
 import log from 'electron-log';
-import uac from './../uac/uac';
+import uac from './uac';
 
 export default class gcloudWrap {
 
@@ -137,9 +137,9 @@ export default class gcloudWrap {
    * Install a component for the gcloud tool.  On Windows, this requires
    * elevation, so use the electron-sudo module.
    */
-  installComponent = (component) => {
+  installComponent = (component, resourcesPath) => {
     if (/^win/.test(process.platform)) {      
-      return uac.installComponent(component);
+      return uac.installComponent(component, resourcesPath);
     } else {
       return this.runAppCommand(null,
         ['components', 'install', component, '-q']);

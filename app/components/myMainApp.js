@@ -57,7 +57,7 @@ export default class MyMainApp extends React.Component {
 
     document.onkeydown = (event) => {
       let evt = event || window.event;
-      if (evt.metaKey && evt.key === "d") {
+      if ((evt.ctrlKey || evt.metaKey) && evt.key === "d") {
         remote.getCurrentWindow().openDevTools();
       }
     }

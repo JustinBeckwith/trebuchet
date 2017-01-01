@@ -17,7 +17,7 @@
   },
   "build": {
     "appId": "app-engine-trebuchet",
-    "extraResources": "templates/",
+    "extraResources": "extras/",
     "mac": {
       "category": "public.app-category.developer-tools"
     },
