@@ -9,7 +9,7 @@ Trebuchet is super ultra expiremental, and under active development.
 ![New](docs/new.png)
 
 ## Download
-Coming soon. 
+See [Releases](https://github.com/JustinBeckwith/trebuchet/releases).
 
 ## License
 [Apache 2.0](LICENSE.md)
