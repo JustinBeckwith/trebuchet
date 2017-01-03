@@ -1,4 +1,3 @@
-const ElectronConnectWebpackPlugin = require('electron-connect-webpack-plugin');
 const path = require("path");
 
 module.exports = {
@@ -6,13 +5,16 @@ module.exports = {
   devtool: 'source-map',
   entry: [
     'babel-polyfill',
-    './app/index.js'
+    './app/renderer.js'
   ],
   output: {
     path: './app',
-    filename: 'index.bundle.js',
+    filename: 'bundle.js',
   },
   module: {
+    noParse: [
+      new RegExp('node_modules/localforage/dist/localforage.js')
+    ],
     loaders: [{
       test: /\.jsx?$/,
       exclude: /node_modules/,
@@ -21,11 +23,5 @@ module.exports = {
         presets: ['es2015', 'react', 'stage-0']
       }
     }]
-  },
-  plugins: [
-    // new ElectronConnectWebpackPlugin({
-    //   path: path.join(__dirname, "."),
-    //   logLevel: 0
-    // }),
-  ]
+  }
 }

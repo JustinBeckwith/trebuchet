@@ -6,12 +6,10 @@
   "main": "main.js",
   "scripts": {
     "start": "electron . --log-level=silly",
-    "build": "webpack",
+    "build": "webpack .",
     "dev": "webpack --watch",
-    "package": "electron-packager . 'App Engine Trebuchet' --out bin --icon build/icon.icns --overwrite",
-    "pack": "build --dir",
-    "dist": "build -ml",
-    "distw": "build -w",
+    "dist": "npm run build && build -ml",
+    "distw": "npm run build && build -w",
     "logs-local": "cat ~/Library/Logs/App\\ Engine\\ Trebuchet/log.log",
     "open-local": "open /Applications/App\\ Engine\\ Trebuchet.app/ --args --log-level silly"
   },
@@ -26,11 +24,10 @@
   "postinstall": "install-app-deps",
   "repository": "https://github.com/JustinBeckwith/trebuchet",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "App Engine",
+    "AppEngine",
+    "Launcher",
+    "UI"
   ],
   "author": "Justin Beckwith <justin.beckwith@gmail.com",
   "license": "Apache-2.0",
@@ -46,9 +43,8 @@
     "electron": "^1.4.1",
     "electron-builder": "^10.12.0",
     "electron-connect": "^0.6.1",
-    "electron-connect-webpack-plugin": "^0.1.1",
-    "electron-packager": "^8.4.0",
-    "webpack": "^1.14.0"
+    "webpack": "^1.14.0",
+    "webpack-dev-server": "^1.16.2"
   },
   "dependencies": {
     "always-tail": "^0.2.0",
@@ -67,6 +63,7 @@
     "react-dom": "^15.4.1",
     "react-tap-event-plugin": "^2.0.1",
     "spawn-sync": "^1.0.15",
+    "try-thread-sleep": "^1.0.0",
     "uuid": "^3.0.1"
   }
 }

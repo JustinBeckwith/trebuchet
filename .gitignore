@@ -1,7 +1,7 @@
 node_modules
 dist
 .DS_Store
-*.bundle.js
-*.bundle.js.map
+bundle.js
+bundle.js.map
 *.pyc
 npm-debug.log
