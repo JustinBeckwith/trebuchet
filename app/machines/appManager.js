@@ -269,6 +269,13 @@ export default class AppManager extends EventEmitter {
   }
 
   /**
+   * The user dragged a directory onto the body, show the import UI.
+   */
+  showDropImportAppDialog = (options) => {
+    this.emit(AppEvents.SHOW_DROP_IMPORT_APP, options);
+  }
+
+  /**
    * Update the settings for a given application.
    */
   updateApp = (appRequest) => {

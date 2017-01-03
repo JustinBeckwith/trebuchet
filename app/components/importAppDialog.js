@@ -22,6 +22,10 @@ export default class importAppDialog extends React.Component {
     }
     
     let manager = this.props.manager;
+
+    /**
+     * Import app was clicked from the (+) button
+     */
     manager.on(AppEvents.SHOW_IMPORT_APP, () => {
       this.getNextPort().then((port) => {
         let name = generate({ number: true }).dashed;
@@ -40,7 +44,36 @@ export default class importAppDialog extends React.Component {
           env: 'standard',
         });
       });
-    });    
+    });  
+
+    /**
+     * Import app via drag and drop
+     */
+    manager.on(AppEvents.SHOW_DROP_IMPORT_APP, (data) => {
+      this.getNextPort().then((port) => {
+        let name = data.name;
+        this.setState({
+          generatedName: name,
+          project: name,
+          port: port,
+          adminPort: port+1,
+          path: data.path,
+          formInvalid: true,
+          cloudSettings: 'newCloudProject',
+          pathErrorText: '',
+          formInvalid: true,
+          runtime: 'python',
+          env: 'standard',
+        }, () => {
+          this.checkFormValid();
+          this.getAppInfo();
+          this.setState({
+            open: true,
+          })
+        });
+      });
+    });  
+
   }
 
   handleOpen = () => {

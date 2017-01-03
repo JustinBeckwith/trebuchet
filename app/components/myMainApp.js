@@ -62,7 +62,29 @@ export default class MyMainApp extends React.Component {
       }
     }
 
+    document.ondragover = () => {
+      return false;
+    };
+
+    document.ondragleave = () => {
+      return false;
+    };
+
+    document.ondragend = () => {
+      return false;
+    };
+
+    document.ondrop = (event) => {
+      event.preventDefault();
+      let files = event.dataTransfer.files;
+      if (files.length > 0) {
+        let dir = files[0];
+        this.props.manager.showDropImportAppDialog(dir);
+      }
+    }
   }
+
+  
 
   render() {
     return (
