@@ -32,6 +32,13 @@ export default class MyGrid extends React.Component {
       });
     });
 
+    // handle app update events
+    manager.on(AppEvents.APP_UPDATED, (apps) => {
+      this.setState({
+        apps: apps,
+      });
+    });
+
     /**
      * Raise an event for the appBar when selection in the grid changes. 
      */

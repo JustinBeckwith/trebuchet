@@ -96,6 +96,13 @@ export default class AppManager extends EventEmitter {
     return this.gcloudWrap.attemptLogin();
   }
 
+  /**
+   * Show the app specific settings dialog.  
+   */
+  showAppSettingsDialog = (app) => {
+    this.emit(AppEvents.SHOW_APP_SETTINGS_DIALOG, app);
+  }
+
   getApp = (name) => {
     return this.getApps().then((apps) => {
       let app = _.find(apps, { name: name });
@@ -262,6 +269,21 @@ export default class AppManager extends EventEmitter {
   }
 
   /**
+   * Update the settings for a given application.
+   */
+  updateApp = (appRequest) => {
+    log.info('Update app request:');
+    log.info(appRequest);
+    let appIdx = _.findIndex(this.apps, { name: appRequest.project });
+    let app = this.apps[appIdx];
+    app.port = appRequest.port;
+    app.adminPort = appRequest.adminPort;
+    this.apps[appIdx] = app;
+    db.setItem('apps', this.apps);
+    this.emit(AppEvents.APP_UPDATED, this.apps);
+  }
+
+  /**
    * Add a new application based on a template. 
    */
   addApp = (appRequest) => {
@@ -277,8 +299,6 @@ export default class AppManager extends EventEmitter {
     }
     this.apps.push(app);
     db.setItem('apps', this.apps);
-
-    
 
     // attempt to create the app directory
     let srcDir = `${this.resourcesPath}/extras/templates/${appRequest.runtime}/standard/basic`;

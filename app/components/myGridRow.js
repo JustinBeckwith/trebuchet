@@ -102,6 +102,9 @@ export default class myGridRow extends React.Component {
       case "Remove":
         appManager.removeApp(app);
         break;
+      case "Settings":
+        appManager.showAppSettingsDialog(app);
+        break;
     }
     // de-select items after the command is run
     appManager.exitSelection();
@@ -166,7 +169,7 @@ export default class myGridRow extends React.Component {
                     anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                     targetOrigin={{horizontal: 'right', vertical: 'top'}} 
                     >
-            <MenuItem primaryText="Edit" value="Edit" />
+            <MenuItem primaryText="Settings" value="Settings" />
             <MenuItem primaryText="Remove" value="Remove" />
             <Divider />
             <MenuItem primaryText={this.state.action}

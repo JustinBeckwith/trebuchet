@@ -22,12 +22,22 @@ export default class newAppDialog extends React.Component {
     
     this.state = {
       open: false,
+      title: "New Application",
     }
     
+    let manager = this.props.manager;
     let localPath = path.join(os.homedir(), "AppEngineApps");
     fs.mkdir(localPath, err => {});
+
+    this.runtimes = [
+      { key: 'python', label: 'Python'},
+      { key: 'go', label: 'Go'},
+      { key: 'php', label: 'PHP'}
+    ];
     
-    let manager = this.props.manager;
+    /**
+     * Handle opening the new App Dialog.
+     */
     manager.on(AppEvents.NEW_APP, () => {
       this.getNextPort().then((port) => {
         let name = generate({ number: true }).dashed;
@@ -41,15 +51,29 @@ export default class newAppDialog extends React.Component {
           runtime: "python",
           autoCreate: true,
           env: 'standard',
+          isEditMode: false,
+          title: "New application",
         });
       });
     });    
 
-    this.runtimes = [
-      { key: 'python', label: 'Python'},
-      { key: 'go', label: 'Go'},
-      { key: 'php', label: 'PHP'}
-    ];
+    /**
+     * Handle opening the edit App Dialog. 
+     */
+    manager.on(AppEvents.SHOW_APP_SETTINGS_DIALOG, (app) => {
+      this.setState({
+        open: true,
+        project: app.name,
+        port: app.port,
+        adminPort: app.adminPort,
+        path: app.path,
+        runtime: app.runtime,
+        autoCreate: false,
+        env: app.env,
+        isEditMode: true,
+        title: "Edit application settings",
+      });
+    });
   
   }
 
@@ -63,7 +87,12 @@ export default class newAppDialog extends React.Component {
 
   handleSubmit = () => {
     let app = this.state;
-    this.props.manager.addApp(app);
+    let manager = this.props.manager;
+    if (this.state.isEditMode) {
+      manager.updateApp(app);
+    } else {
+      manager.addApp(app);
+    }
     this.setState({open: false});
   };
 
@@ -81,13 +110,13 @@ export default class newAppDialog extends React.Component {
 
   onPortChange = (event) => {
     this.setState({
-      port: event.target.value,
+      port: parseInt(event.target.value),
     });
   }
 
   onAdminPortChange = (event) => {
     this.setState({
-      adminPort: event.target.value,
+      adminPort: parseInt(event.target.value),
     });
   }
 
@@ -132,7 +161,6 @@ export default class newAppDialog extends React.Component {
     const actions = [
       <FlatButton
         label="Cancel"
-        primary={true}
         onTouchTap={this.handleClose}
       />,
       <FlatButton
@@ -149,7 +177,7 @@ export default class newAppDialog extends React.Component {
 
     return (
       <Dialog
-        title="New application"
+        title={this.state.title}
         actions={actions}
         modal={false}
         open={this.state.open}
@@ -163,6 +191,7 @@ export default class newAppDialog extends React.Component {
               hintText="Project" 
               floatingLabelText="Project name"
               value={this.state.project}
+              disabled={this.state.isEditMode}
               onChange={this.onProjectChange} />
           </div>
           <div>
@@ -170,6 +199,7 @@ export default class newAppDialog extends React.Component {
               style={{width:'100px'}}
               floatingLabelText="Language"
               value={this.state.runtime}
+              disabled={this.state.isEditMode}
               onChange={this.onRuntimeChange}>
               {runtimes}
             </SelectField>
@@ -202,6 +232,7 @@ export default class newAppDialog extends React.Component {
               label="Create cloud project"
               checked={this.state.autoCreate}
               onCheck={this.onAutoCreateCheck}
+              disabled={this.state.isEditMode}
               labelStyle={{fontSize: '12px', textTransform: 'uppercase', fontWeight: 'bold', color: '#777'}} />
           </div>
         </div>
@@ -215,6 +246,7 @@ export default class newAppDialog extends React.Component {
             disabled={true} />
           <RaisedButton 
             label="..."
+            disabled={this.state.isEditMode}
             onClick={this.onUploadClick}>
           </RaisedButton>
         </div>
