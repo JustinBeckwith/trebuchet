@@ -11,7 +11,7 @@ import db from 'localforage';
 import fse from 'fs-extra';
 import fs from 'fs';
 import fixPath from 'fix-path';
-import log from 'electron-log';
+import log from './../../logger';
 import chmodr from 'chmodr';
 
 export default class AppManager extends EventEmitter {
@@ -22,15 +22,6 @@ export default class AppManager extends EventEmitter {
     // import OSX path variables so you can use gcloud
     fixPath();
     log.info("PATH: " + process.env.PATH);
-    
-    // allow override of the log level 
-    let logLevel = _.find(process.argv, arg => arg.indexOf('--log-level=') > -1);
-    if (logLevel) {
-      let level = logLevel.split('=')[1];
-      console.log('Setting log level to ' + level);
-      log.transports.console.level = level;
-      log.transports.file.level = level;
-    }
 
     // getAppPath seems to be one ../ off when packaged vs dev. 
     this.resourcesPath = remote.app.getAppPath();
