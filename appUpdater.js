@@ -63,16 +63,13 @@ function checkForUpdates(window) {
     log.info("update-not-available");
   });
 
-  if (platform === "darwin") {
-    let url = `https://${UPDATE_SERVER_HOST}/update/${platform}_${os.arch()}/${version}`
-    console.log(url);
-    autoUpdater.setFeedURL(url)
-  }
-
   window.webContents.once("did-frame-finish-load", (event) => {
     log.info('checking for updates ...');
     autoUpdater.checkForUpdates();
   });
+
+  let url = `https://${UPDATE_SERVER_HOST}/update/${platform}_${os.arch()}/${version}`;
+  autoUpdater.setFeedURL(url);
 }
 
 module.exports = {
