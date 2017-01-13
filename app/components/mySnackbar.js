@@ -13,6 +13,7 @@ export default class mySnackbar extends React.Component {
       OPEN: 'open',
       BROWSE: 'browse',
       NONE: '',
+      INSTALL: 'install',
       DEPLOY: 'deploy'
     }
   
@@ -64,6 +65,13 @@ export default class mySnackbar extends React.Component {
         action: this.snacktions.DEPLOY,
         app: app
       });
+    }).on(AppEvents.UPDATE_AVAILABLE, (message) => {
+      this.setState({ 
+        message: `Update ${message.releaseName} is available.`,
+        open: true,
+        action: this.snacktions.INSTALL,
+        app: null
+      });
     });
   }
 
@@ -93,6 +101,9 @@ export default class mySnackbar extends React.Component {
         break;
       case this.snacktions.DEPLOY:
         appManager.deployApp(this.state.app);
+        break;
+      case this.snacktions.INSTALL:
+        appManager.installUpdate();
         break;
     }
   };

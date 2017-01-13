@@ -1,7 +1,7 @@
 {
   "name": "app-engine-trebuchet",
   "productName": "App Engine Trebuchet",
-  "version": "0.0.4",
+  "version": "0.0.2",
   "description": "App Engine Trebuchet is a visual tool that makes it easier to create and deploy applications for App Engine.  It's meant to be a replacement for the App Engine Launcher.",
   "main": "main.js",
   "scripts": {

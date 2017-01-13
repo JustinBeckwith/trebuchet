@@ -82,9 +82,7 @@ export default class MyMainApp extends React.Component {
         this.props.manager.showDropImportAppDialog(dir);
       }
     }
-  }
-
-  
+  }  
 
   render() {
     return (

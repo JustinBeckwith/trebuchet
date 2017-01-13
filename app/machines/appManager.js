@@ -1,7 +1,7 @@
 import * as AppStates from './appStates';
 import DevAppWrap from './devAppWrap';
 import GCloudWrap from './gcloudWrap';
-import {shell, remote} from 'electron';
+import {shell, remote, ipcRenderer} from 'electron';
 import EventEmitter from 'events';
 import _ from 'lodash';
 import * as AppEvents from './appEvents';
@@ -45,6 +45,11 @@ export default class AppManager extends EventEmitter {
       log.info(`app ${app.path} is stopped!`);
       this.emit(AppEvents.STOPPED, app);
       this.emit(AppEvents.STATUS_CHANGED, app);
+    });
+
+    ipcRenderer.on('updateAvailable', (event, message) => {
+      log.info(message);
+      this.emit(AppEvents.UPDATE_AVAILABLE, message);
     });
   }
 
@@ -279,6 +284,10 @@ export default class AppManager extends EventEmitter {
     this.apps[appIdx] = app;
     db.setItem('apps', this.apps);
     this.emit(AppEvents.APP_UPDATED, this.apps);
+  }
+
+  installUpdate = () => {
+    ipcRenderer.send('installUpdate');
   }
 
   /**

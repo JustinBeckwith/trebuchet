@@ -10,6 +10,7 @@ function checkForUpdates(window) {
   log.info('checking for updates!');
   let app = electron.app;
   let BrowserWindow = electron.BrowserWindow;
+  let ipcMain = electron.ipcMain;
 
   let platform = os.platform();
   if (isDev) {
@@ -27,16 +28,27 @@ function checkForUpdates(window) {
   });
   
   autoUpdater.addListener("update-downloaded", (event, releaseNotes, releaseName, releaseDate, updateURL) => {
-    let title = "A new update is ready to install";
-    let message = `Version ${releaseName} is downloaded and will be automatically installed on Quit`;
-    let windows = BrowserWindowElectron.getAllWindows();
+    let windows = BrowserWindow.getAllWindows();
     if (windows.length == 0) {
       return;
     }
-    windows[0].webContents.send("notify", title, message);
-    log.info("quitAndInstall");
-    autoUpdater.quitAndInstall();
+    
+    log.info("An update is available.");
+    log.info("%s\n%s\n%s\n%s", releaseNotes, releaseName, releaseDate, updateURL);
+
+    // send a message to the main window, asking the user if they want to install the update
+    windows[0].webContents.send("updateAvailable", {
+      releaseName,
+      releaseDate,
+      releaseNotes
+    });
     return true;
+  });
+
+  // raised when the renderer process tells us to install the update
+  electron.ipcMain.on('installUpdate', (event) => {
+    log.info("Installing update and quitting.");
+    autoUpdater.quitAndInstall();
   });
 
   autoUpdater.addListener("error", (err) => {
