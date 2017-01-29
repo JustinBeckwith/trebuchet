@@ -5,3 +5,5 @@ bundle.js
 bundle.js.map
 *.pyc
 npm-debug.log
+extras/templates/flexible/php/vendor
+extras/templates/flexible/python/env

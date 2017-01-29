@@ -14,6 +14,7 @@ import generate from 'project-name-generator';
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
+import {Env, Runtimes} from './../machines/runtimes';
 
 export default class newAppDialog extends React.Component {
 
@@ -23,17 +24,13 @@ export default class newAppDialog extends React.Component {
     this.state = {
       open: false,
       title: "New Application",
+      runtime: "nodejs",
+      env: Env.FLEXIBLE
     }
     
     let manager = this.props.manager;
     let localPath = path.join(os.homedir(), "AppEngineApps");
     fs.mkdir(localPath, err => {});
-
-    this.runtimes = [
-      { key: 'python', label: 'Python'},
-      { key: 'go', label: 'Go'},
-      { key: 'php', label: 'PHP'}
-    ];
     
     /**
      * Handle opening the new App Dialog.
@@ -48,9 +45,9 @@ export default class newAppDialog extends React.Component {
           port: port,
           adminPort: port+1,
           path: localPath,
-          runtime: "python",
+          runtime: "nodejs",
           autoCreate: true,
-          env: 'standard',
+          env: Env.FLEXIBLE,
           isEditMode: false,
           title: "New application",
         });
@@ -171,7 +168,9 @@ export default class newAppDialog extends React.Component {
       />,
     ];
 
-    const runtimes = this.runtimes.map((runtime) => {
+    let runtime = _.find(Runtimes, { key: this.state.runtime });
+    let imagePath = './images/svg/' + runtime.lang + '.svg';
+    const runtimes = Runtimes.map((runtime) => {
       return <MenuItem value={runtime.key} primaryText={runtime.label} key={runtime.key} />
     });
 
@@ -196,7 +195,7 @@ export default class newAppDialog extends React.Component {
           </div>
           <div>
             <SelectField 
-              style={{width:'100px'}}
+              style={{width:'175px'}}
               floatingLabelText="Language"
               value={this.state.runtime}
               disabled={this.state.isEditMode}
@@ -224,7 +223,7 @@ export default class newAppDialog extends React.Component {
           </div>
         </div>
         <div style={{float: 'right', border: '1px solid #CCC', width: 'calc(100% - 270px)', height: '270px', marginTop: '20px'}}>
-          <img src={'./images/svg/' + this.state.runtime + '.svg'} style={{width: '100%', height: '270px', margin: 'auto', display: 'block'}}/>
+          <img src={imagePath} style={{width: '100%', height: '270px', margin: 'auto', display: 'block'}}/>
           <div style={{float:'right', whiteSpace: 'nowrap'}}>
            <Checkbox
               checkedIcon={<CloudDone />}

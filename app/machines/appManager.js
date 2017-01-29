@@ -308,7 +308,7 @@ export default class AppManager extends EventEmitter {
     db.setItem('apps', this.apps);
 
     // attempt to create the app directory
-    let srcDir = `${this.resourcesPath}/extras/templates/${appRequest.runtime}/standard/basic`;
+    let srcDir = `${this.resourcesPath}/extras/templates/${appRequest.env}/${appRequest.runtime}`;
     log.info('copying template from ' + srcDir);
     fse.copy(srcDir, app.path, (err) => {
       if (err) {
