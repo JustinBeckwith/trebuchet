@@ -3,12 +3,15 @@ import * as AppStates from './appStates';
 import EventEmitter from 'events';
 import log from 'electron-log';
 import spawn from 'cross-spawn';
+//import Flem from 'flem';
 
 export default class devAppWrap extends EventEmitter {
 
   constructor() {
     super();
     this.appServers = [];
+    //let flem = new Flem();
+    
   }
 
   startAppServer = (app) => {

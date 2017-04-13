@@ -1,5 +1,5 @@
 const path = require("path");
-
+process.traceDeprecation = true
 module.exports = {
   target: 'electron',
   devtool: 'source-map',
@@ -8,14 +8,14 @@ module.exports = {
     './app/renderer.js'
   ],
   output: {
-    path: './app',
+    path: path.join(__dirname, 'app'),
     filename: 'bundle.js',
   },
   module: {
     noParse: [
       new RegExp('node_modules/localforage/dist/localforage.js')
     ],
-    loaders: [{
+    rules: [{
       test: /\.jsx?$/,
       exclude: /node_modules/,
       loader: 'babel-loader',

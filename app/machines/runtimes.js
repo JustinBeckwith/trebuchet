@@ -12,7 +12,7 @@ export const Runtimes = [
     env: Env.FLEXIBLE
   },
   { 
-    key: 'python', 
+    key: 'python-flexible', 
     lang: 'python', 
     label: 'Python', 
     env: Env.FLEXIBLE
@@ -24,13 +24,13 @@ export const Runtimes = [
     env: Env.FLEXIBLE
   },
   { 
-    key: 'php', 
+    key: 'php-flexible', 
     label: 'PHP', 
     lang: 'php', 
     env: Env.FLEXIBLE
   },
   { 
-    key: 'go', 
+    key: 'go-flexible', 
     label: 'Go', 
     lang: 'go', 
     env: Env.FLEXIBLE
@@ -42,21 +42,21 @@ export const Runtimes = [
     env: Env.FLEXIBLE
   },
   { 
-    key: 'python-standard', 
+    key: 'python',
     label: 'Python (standard)', 
     lang: 'python', 
     env: Env.STANDARD
   },
   { 
-    key: 'go-standard', 
+    key: 'go', 
     label: 'Go (standard)', 
     lang: 'go', 
     env: Env.STANDARD
   },
   { 
-    key: 'php-standard', 
-    label: 'PHP (standard)', 
-    lang: 'php', 
+    key: 'php',
+    label: 'PHP (standard)',
+    lang: 'php',
     env: Env.STANDARD
   }
 ];

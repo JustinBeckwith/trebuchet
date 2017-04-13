@@ -13,6 +13,7 @@ import fs from 'fs';
 import fixPath from 'fix-path';
 import log from './../../logger';
 import chmodr from 'chmodr';
+import {Env} from './runtimes';
 
 export default class AppManager extends EventEmitter {
 
@@ -171,16 +172,7 @@ export default class AppManager extends EventEmitter {
    * Start a given application using the appropriate emulator.
    */
   startApp = (app) => {
-
-    // we can't run flex apps quite yet
-    if (app.env == "flex") {
-      this.emit(AppEvents.SHOW_ERROR, { 
-        title: "Flex not supported",
-        message: "Trebuchet doesn't currently support running App Engine Flex applications."
-      });
-      return;
-    }
-    
+ 
     // notify UI the start is starting
     app.status = AppStates.STARTING;
     this.emit(AppEvents.STATUS_CHANGED, app);
@@ -217,7 +209,7 @@ export default class AppManager extends EventEmitter {
         });
         this.emit(AppEvents.EMIT_LOGS, app);
       });
-    })
+    });
   }
   
   stopApp = (app) => {
@@ -369,6 +361,9 @@ export default class AppManager extends EventEmitter {
   _installComponentIfNeeded = (component, app) => {
     log.info('Checking for component ' + component);
     return new Promise((resolve, reject) => {
+      if (component == null || component == "") {
+        return resolve();
+      }
       this.isComponentInstalled(component).then(installed => {
         if (!installed) {
           log.info('Component ' + component + ' is not installed.');
