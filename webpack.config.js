@@ -1,7 +1,7 @@
 const path = require("path");
 process.traceDeprecation = true
 module.exports = {
-  target: 'electron',
+  target: 'electron-renderer',
   devtool: 'source-map',
   entry: [
     'babel-polyfill',
@@ -15,13 +15,14 @@ module.exports = {
     noParse: [
       new RegExp('node_modules/localforage/dist/localforage.js')
     ],
-    rules: [{
-      test: /\.jsx?$/,
-      exclude: /node_modules/,
-      loader: 'babel-loader',
-      query: {
-        presets: ['es2015', 'react', 'stage-0']
-      }
-    }]
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['es2015', 'react', 'stage-0']
+        }
+      }]
   }
 }

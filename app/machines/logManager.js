@@ -2,7 +2,6 @@ import os from 'os';
 import path from 'path';
 import fs from 'fs';
 import uuid from 'uuid/v4';
-//import {Tail} from 'tail';
 import Tail from 'always-tail';
 import log from 'electron-log';
 
@@ -17,7 +16,7 @@ export default class LogManager {
   /*
    * Each application will have a single text log in tmp on disk.  Various processes
    * That operate on the app will all write to the same log file.  Writing to disk keeps
-   * the log out of memory, and helps prevent leaks.  
+   * the log out of memory, and helps prevent leaks.
    */
   attachLogger(app, process) {
     return this.createTmpDirIfNotExists()
@@ -30,12 +29,12 @@ export default class LogManager {
       .catch((err) => {
         log.error("Error attaching logger to process...");
         log.error(err);
-      }); 
+      });
   }
 
   /*
-   * Given a process, attach the appropriate handlers and pipe output to 
-   * the log file. 
+   * Given a process, attach the appropriate handlers and pipe output to
+   * the log file.
    */
   configureLogger(process, writeStream) {
     process.stdout.setEncoding('utf8');
@@ -45,7 +44,7 @@ export default class LogManager {
   }
 
   /*
-   * Create the tmp dir if it doesn't exist. 
+   * Create the tmp dir if it doesn't exist.
    */
   createTmpDirIfNotExists() {
     return new Promise((resolve, reject) => {
@@ -66,17 +65,17 @@ export default class LogManager {
 
   /*
    * Create the app log if it doesn't exist.  Returns the a writableStream
-   * to a log provisioned for the given app. 
+   * to a log provisioned for the given app.
    */
   createAppLogIfNotExists(tmpDir, app) {
     return new Promise((resolve, reject) => {
-      
+
       // check to see if we already have a log for the app
       let logEntry = this.logMap.get(app.name);
       if (logEntry) {
         log.info('App log already exists, returning ' + logEntry.logPath);
         return resolve(logEntry);
-      } 
+      }
 
       // create the app log file in tmp
       let logPath = path.join(tmpDir, uuid());
@@ -85,9 +84,9 @@ export default class LogManager {
         .on('error', (error) => {
           reject(error);
         })
-      
+
       // make sure to update the map with the new log file
-      logEntry = { 
+      logEntry = {
         logPath: logPath,
         writeStream: writeStream
       };
@@ -111,10 +110,10 @@ export default class LogManager {
           log.error('Error reading from process log file.');
           log.error(err);
         });
-        
+
       this.logMap.set(app.name, Object.assign(logEntry, { tail: tail }));
       return tail;
-    } 
+    }
     return null;
   }
 
