@@ -8,7 +8,12 @@ Trebuchet is super ultra expiremental, and under active development.
 ![Main](docs/main.png)
 ![New](docs/new.png)
 
-## Download
+## Install and Run
+1. Install Node: https://nodejs.org/en/download/
+2. Inside this project's directory, `npm install`
+3. Inside this project's directory, `npm start`
+
+## History
 See [Releases](https://github.com/JustinBeckwith/trebuchet/releases).
 
 ## License
