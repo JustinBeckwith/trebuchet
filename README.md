@@ -1,4 +1,6 @@
 # App Engine Trebuchet
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/JustinBeckwith/trebuchet.svg)](https://greenkeeper.io/)
 App Engine Trebuchet is a visual tool that makes it easier to create and deploy applications for App Engine.
 It's meant to be a replacement for the App Engine Launcher.  
 
